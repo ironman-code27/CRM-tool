@@ -31,7 +31,7 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 export async function verifyConnection() {
   try {
     const { data, error } = await supabase
-      .from('leads')
+      .from('Texkera-CRM-DataBase')
       .select('*')
       .limit(1);
 

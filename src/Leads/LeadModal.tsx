@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import type { Lead } from '../types/Lead';
 import type { TeamMember } from '../types/TeamMember';
+import { createLead, updateLead } from '../services/leadsService';
 
 interface LeadModalProps {
   leads: Lead[];
@@ -10,6 +11,8 @@ interface LeadModalProps {
   close: () => void;
   setCurrentView: any;
   setCurrentDetailId: any;
+  /** Optional toast callback — used to surface a non-blocking "cloud sync failed" message. */
+  toast?: (msg: string) => void;
 }
 
 export const LeadModal: React.FC<LeadModalProps> = ({
@@ -20,6 +23,7 @@ export const LeadModal: React.FC<LeadModalProps> = ({
   close,
   setCurrentView,
   setCurrentDetailId,
+  toast,
 }) => {
   const [fname, setFname] = useState('');
   const [lname, setLname] = useState('');
@@ -65,47 +69,68 @@ export const LeadModal: React.FC<LeadModalProps> = ({
     if (cloud) svcs.push('cloud');
     if (saas) svcs.push('saas');
 
+    // Supabase promise — assigned in each branch and fired after close()
+    let supabaseOp: Promise<{ success: boolean; error?: string }>;
+
     if (editId) {
-      const nextLeads = leads.map((l) =>
-        l.id === editId
-          ? {
-              ...l,
-              fname: fname.trim(),
-              lname: lname.trim(),
-              title: title.trim(),
-              company: company.trim(),
-              email: email.trim(),
-              country: country.trim(),
-              stage: stage as any,
-              assignee,
-              services: svcs,
-              notes: notes.trim(),
-            }
-          : l
-      );
-      triggerSave({ leads: nextLeads });
-      setCurrentDetailId(editId);
-    } else {
-      const newId = 'l' + Date.now();
-      const newLead = {
-        id: newId,
+      // Build the patch object once — used for both triggerSave and Supabase
+      const patch: Partial<Lead> = {
         fname: fname.trim(),
         lname: lname.trim(),
         title: title.trim(),
         company: company.trim(),
         email: email.trim(),
         country: country.trim(),
-        stage: stage as any,
+        stage: stage as Lead['stage'],
+        assignee,
+        services: svcs,
+        notes: notes.trim(),
+      };
+
+      // 1. Update React state + localStorage immediately (unchanged behaviour)
+      const nextLeads = leads.map((l) =>
+        l.id === editId ? { ...l, ...patch } : l
+      );
+      triggerSave({ leads: nextLeads });
+      setCurrentDetailId(editId);
+
+      // 2. Queue Supabase update (will run after close())
+      supabaseOp = updateLead(editId, patch);
+    } else {
+      const newLead: Lead = {
+        id: 'l' + Date.now(),
+        fname: fname.trim(),
+        lname: lname.trim(),
+        title: title.trim(),
+        company: company.trim(),
+        email: email.trim(),
+        country: country.trim(),
+        stage: stage as Lead['stage'],
         assignee,
         services: svcs,
         notes: notes.trim(),
         channels: [],
         created: new Date().toISOString().slice(0, 10),
       };
+
+      // 1. Update React state + localStorage immediately (unchanged behaviour)
       triggerSave({ leads: [...leads, newLead] });
       setCurrentView('leads');
+
+      // 2. Queue Supabase insert (will run after close())
+      supabaseOp = createLead(newLead);
     }
+
+    // Close the modal immediately — UI is never blocked by the network call
     close();
+
+    // Handle Supabase result non-blockingly
+    supabaseOp.then((result) => {
+      if (!result.success) {
+        console.warn('[LeadModal] Supabase sync failed:', result.error);
+        toast?.('Saved locally — cloud sync failed');
+      }
+    });
   };
 
   return (

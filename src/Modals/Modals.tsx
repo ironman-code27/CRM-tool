@@ -44,6 +44,7 @@ export const Modals: React.FC = () => {
           close={() => setActiveModal(null)}
           setCurrentView={setCurrentView}
           setCurrentDetailId={setCurrentDetailId}
+          toast={toast}
         />
       )}
 

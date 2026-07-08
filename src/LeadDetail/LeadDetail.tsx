@@ -6,6 +6,8 @@ import { COLORS } from '../constants/seedData';
 import LeadInfo from './LeadInfo';
 import Timeline from './Timeline';
 import Notes from './Notes';
+import type { PipelineStage } from '../types/PipelineStage';
+import { deleteLead, updateLead } from '../services/leadsService';
 
 const serviceLabels = {
   cyber: 'Cyber',
@@ -84,21 +86,48 @@ export const LeadDetail: React.FC = () => {
   const handleDeleteLead = () => {
     if (!window.confirm('Delete this lead? This cannot be undone.')) return;
     const nextLeads = leads.filter((x) => x.id !== lead.id);
+    // 1. Update React state + localStorage immediately
     triggerSave({ leads: nextLeads });
     setCurrentView('pipeline');
     toast('Lead deleted');
+
+    // 2. Sync deletion to Supabase (non-blocking)
+    deleteLead(lead.id).then((result) => {
+      if (!result.success) {
+        console.warn('[LeadDetail] deleteLead sync failed:', result.error);
+        toast('Deleted locally — cloud sync failed');
+      }
+    });
   };
 
   const handleUpdateStage = (val: string) => {
     const nextLeads = leads.map((x) => (x.id === lead.id ? { ...x, stage: val as any } : x));
+    // 1. Update React state + localStorage immediately
     triggerSave({ leads: nextLeads });
     toast('Stage updated');
+
+    // 2. Sync stage change to Supabase (non-blocking)
+    updateLead(lead.id, { stage: val as PipelineStage }).then((result) => {
+      if (!result.success) {
+        console.warn('[LeadDetail] updateLead (stage) sync failed:', result.error);
+        toast('Saved locally — cloud sync failed');
+      }
+    });
   };
 
   const handleUpdateAssignee = (val: string) => {
     const nextLeads = leads.map((x) => (x.id === lead.id ? { ...x, assignee: val } : x));
+    // 1. Update React state + localStorage immediately
     triggerSave({ leads: nextLeads });
     toast('Assignee updated');
+
+    // 2. Sync assignee change to Supabase (non-blocking)
+    updateLead(lead.id, { assignee: val }).then((result) => {
+      if (!result.success) {
+        console.warn('[LeadDetail] updateLead (assignee) sync failed:', result.error);
+        toast('Saved locally — cloud sync failed');
+      }
+    });
   };
 
   const handleToggleTask = (id: string) => {

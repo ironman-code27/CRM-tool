@@ -1,6 +1,7 @@
 import React, { useRef } from 'react';
 import { useCRM } from '../context/CRMContext';
 import * as csvService from '../services/csv';
+import { bulkInsertLeads } from '../services/leadsService';
 
 const viewTitles: Record<string, [string, string]> = {
   dashboard: ['Dashboard', 'Welcome back'],
@@ -100,6 +101,18 @@ export const Topbar: React.FC = () => {
         triggerSave({ leads: result.updatedLeads });
         setUploadResultsHtml(buildUploadResultsHtml(result, true));
         setActiveModal('upload');
+
+        // Sync only genuinely new leads to Supabase (non-blocking)
+        if (result.added > 0) {
+          const existingIds = new Set(leads.map((l) => l.id));
+          const newLeads = result.updatedLeads.filter((l) => !existingIds.has(l.id));
+          bulkInsertLeads(newLeads).then((syncResult) => {
+            if (!syncResult.success) {
+              toast('Leads imported locally — cloud sync failed');
+              console.warn('[Topbar] bulkInsertLeads (xlsx) failed:', syncResult.error);
+            }
+          });
+        }
       } catch (err) {
         toast('Could not parse file.');
         console.error(err);
@@ -113,6 +126,18 @@ export const Topbar: React.FC = () => {
           triggerSave({ leads: result.updatedLeads });
           setUploadResultsHtml(buildUploadResultsHtml(result, false));
           setActiveModal('upload');
+
+          // Sync only genuinely new leads to Supabase (non-blocking)
+          if (result.added > 0) {
+            const existingIds = new Set(leads.map((l) => l.id));
+            const newLeads = result.updatedLeads.filter((l) => !existingIds.has(l.id));
+            bulkInsertLeads(newLeads).then((syncResult) => {
+              if (!syncResult.success) {
+                toast('Leads imported locally — cloud sync failed');
+                console.warn('[Topbar] bulkInsertLeads (csv) failed:', syncResult.error);
+              }
+            });
+          }
         } catch (err) {
           toast('CSV parse error');
           console.error(err);
