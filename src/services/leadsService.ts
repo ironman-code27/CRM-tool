@@ -170,7 +170,8 @@ export async function getLeads(): Promise<ServiceResult<Lead[]>> {
   try {
     const response = await supabase
       .from(LEADS_TABLE)
-      .select('*', { count: 'exact' });
+      .select('*', { count: 'exact' })
+      .headers({ 'Cache-Control': 'no-cache' });
 
     console.log('[DEBUG] getLeads() raw response:', {
       data: response.data,
