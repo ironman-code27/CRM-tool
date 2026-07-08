@@ -7,6 +7,7 @@ import type { TeamMember } from '../types/TeamMember';
 import { SEED_TEAM, SEED_LEADS } from '../constants/seedData';
 import * as jsonbin from '../services/jsonbin';
 import { verifyConnection } from '../services/supabase';
+import { getLeads, subscribeToLeads } from '../services/leadsService';
 
 interface CRMContextType {
   leads: Lead[];
@@ -216,10 +217,7 @@ export const CRMProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     setSyncState('loading');
     const data = await jsonbin.cloudLoad(binId, binKey);
     if (data) {
-      if (data.leads) {
-        setLeads(data.leads);
-        localStorage.setItem(LS.leads, JSON.stringify(data.leads));
-      }
+      // Leads are loaded from Supabase separately
       if (data.tasks) {
         setTasks(data.tasks);
         localStorage.setItem(LS.tasks, JSON.stringify(data.tasks));
@@ -249,9 +247,27 @@ export const CRMProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     }
   }, [binId, binKey]);
 
-  // Verify Supabase connection on startup
+  // Verify Supabase connection, load initial leads, and subscribe to realtime changes on startup
   useEffect(() => {
     verifyConnection();
+
+    // 1. Initial fetch from Supabase
+    getLeads().then((res) => {
+      if (res.success && res.data) {
+        setLeads(res.data);
+        localStorage.setItem(LS.leads, JSON.stringify(res.data));
+      }
+    });
+
+    // 2. Realtime subscription
+    const unsubscribe = subscribeToLeads((latestLeads) => {
+      setLeads(latestLeads);
+      localStorage.setItem(LS.leads, JSON.stringify(latestLeads));
+    });
+
+    return () => {
+      unsubscribe();
+    };
   }, []);
 
   // Sync interval loader (Poll remote changes every 30s - matches original setInterval)
@@ -263,32 +279,7 @@ export const CRMProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
       let changed = false;
 
-      // Deep compare logic to merge leads safely
-      setLeads((prevLeads) => {
-        const localIds = new Set(prevLeads.map((l) => l.id));
-        let nextLeads = [...prevLeads];
-        let subChanged = false;
-
-        (data.leads || []).forEach((rl: Lead) => {
-          if (!localIds.has(rl.id)) {
-            nextLeads.push(rl);
-            subChanged = true;
-          } else {
-            const index = nextLeads.findIndex((l) => l.id === rl.id);
-            if (index >= 0 && JSON.stringify(nextLeads[index]) !== JSON.stringify(rl)) {
-              nextLeads[index] = rl;
-              subChanged = true;
-            }
-          }
-        });
-
-        if (subChanged) {
-          localStorage.setItem(LS.leads, JSON.stringify(nextLeads));
-          changed = true;
-          return nextLeads;
-        }
-        return prevLeads;
-      });
+      // Leads are loaded and synced via Supabase Realtime subscription above
 
       // Activities length checking
       setActivity((prevActivity) => {

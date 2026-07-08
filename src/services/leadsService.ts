@@ -295,8 +295,26 @@ export async function bulkInsertLeads(leads: Lead[]): Promise<ServiceResult> {
 
 export type LeadChangeCallback = (leads: Lead[]) => void;
 
-export function subscribeToLeads(_callback: LeadChangeCallback): () => void {
+export function subscribeToLeads(callback: LeadChangeCallback): () => void {
+  const channel = supabase
+    .channel('realtime-leads')
+    .on(
+      'postgres_changes',
+      {
+        event: '*',
+        schema: 'public',
+        table: LEADS_TABLE,
+      },
+      async () => {
+        const result = await getLeads();
+        if (result.success && result.data) {
+          callback(result.data);
+        }
+      }
+    )
+    .subscribe();
+
   return () => {
-    /* no-op unsubscribe */
+    supabase.removeChannel(channel);
   };
 }
