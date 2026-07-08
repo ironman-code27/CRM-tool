@@ -168,18 +168,32 @@ function patchToRowPatch(patch: Partial<Lead>): Partial<LeadRow> {
  */
 export async function getLeads(): Promise<ServiceResult<Lead[]>> {
   try {
-    const { data, error } = await supabase
+    const response = await supabase
       .from(LEADS_TABLE)
-      .select('*');
+      .select('*', { count: 'exact' });
+
+    console.log('[DEBUG] getLeads() raw response:', {
+      data: response.data,
+      error: response.error,
+      status: response.status,
+      statusText: response.statusText,
+      count: response.count,
+      timestamp: new Date().toISOString()
+    });
+
+    const { data, error } = response;
 
     if (error) {
       console.error('[leadsService] getLeads error:', error.message);
       return { success: false, error: error.message };
     }
 
+    const mappedLeads = ((data ?? []) as LeadRow[]).map(rowToLead);
+    console.log('[DEBUG] getLeads() mapped leads count:', mappedLeads.length);
+
     return {
       success: true,
-      data: ((data ?? []) as LeadRow[]).map(rowToLead),
+      data: mappedLeads,
     };
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
