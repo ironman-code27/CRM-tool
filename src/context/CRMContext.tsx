@@ -66,7 +66,7 @@ const LS = {
 
 export const CRMProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   // Load initial local states
-  const [leads, setLeadsState] = useState<Lead[]>(() => {
+  const [leads, setLeads] = useState<Lead[]>(() => {
     try {
       const stored = localStorage.getItem(LS.leads);
       return stored ? JSON.parse(stored) : SEED_LEADS;
@@ -75,21 +75,6 @@ export const CRMProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     }
   });
 
-  const setLeads = (val: React.SetStateAction<Lead[]>) => {
-    let resolved: Lead[];
-    if (typeof val === 'function') {
-      resolved = (val as any)(leads);
-    } else {
-      resolved = val;
-    }
-    console.log(`[DEBUG] setLeads() called:`, {
-      caller: new Error().stack?.split('\n')[2]?.trim() || 'unknown',
-      length: resolved?.length,
-      timestamp: new Date().toISOString(),
-      data: resolved
-    });
-    setLeadsState(val);
-  };
 
   const [tasks, setTasks] = useState<Task[]>(() => {
     try {
