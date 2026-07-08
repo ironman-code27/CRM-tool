@@ -6,6 +6,7 @@ import type { Activity } from '../types/Activity';
 import type { TeamMember } from '../types/TeamMember';
 import { SEED_TEAM, SEED_LEADS } from '../constants/seedData';
 import * as jsonbin from '../services/jsonbin';
+import { verifyConnection } from '../services/supabase';
 
 interface CRMContextType {
   leads: Lead[];
@@ -247,6 +248,11 @@ export const CRMProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       setSyncState('offline');
     }
   }, [binId, binKey]);
+
+  // Verify Supabase connection on startup
+  useEffect(() => {
+    verifyConnection();
+  }, []);
 
   // Sync interval loader (Poll remote changes every 30s - matches original setInterval)
   useEffect(() => {
