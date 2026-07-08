@@ -1,0 +1,1671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TekXera CRM</title>
+<style>
+:root {
+  --bg: #F4F6F9;
+  --bg2: #FFFFFF;
+  --bg3: #F8F9FB;
+  --bg4: #EEF1F6;
+  --border: #E2E6EE;
+  --border2: #CDD3E0;
+  --text: #1A2340;
+  --text2: #4A5568;
+  --text3: #8A96A8;
+  --teal: #1B3FAB;
+  --teal2: #1535A0;
+  --teal-bg: rgba(27,63,171,0.08);
+  --blue: #1B3FAB;
+  --blue-bg: rgba(27,63,171,0.08);
+  --amber: #E8650A;
+  --amber-bg: rgba(232,101,10,0.1);
+  --green: #16A34A;
+  --green-bg: rgba(22,163,74,0.1);
+  --red: #DC2626;
+  --red-bg: rgba(220,38,38,0.08);
+  --purple: #7C3AED;
+  --purple-bg: rgba(124,58,237,0.1);
+  --pink: #DB2777;
+  --pink-bg: rgba(219,39,119,0.1);
+  --radius: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --shadow: 0 2px 12px rgba(27,63,171,0.08);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:14px;min-height:100vh}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:var(--bg2)}
+::-webkit-scrollbar-thumb{background:#CDD3E0;border-radius:3px}
+
+/* Layout */
+.app{display:flex;height:100vh;overflow:hidden}
+.sidebar{width:230px;background:#1B3FAB;border-right:1px solid #1535A0;display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto}
+.logo-wrap{padding:20px 18px 16px;border-bottom:1px solid var(--border)}
+.logo-mark{display:flex;align-items:center;gap:10px;margin-bottom:4px}
+.logo-icon{width:32px;height:32px;background:rgba(255,255,255,0.2);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;color:#fff;flex-shrink:0}
+.logo-text{font-size:16px;font-weight:700;letter-spacing:-.3px;color:#fff}
+.logo-sub{font-size:11px;color:rgba(255,255,255,0.55);margin-left:0}
+.nav-section{font-size:10px;font-weight:700;color:rgba(255,255,255,0.4);letter-spacing:.1em;text-transform:uppercase;padding:16px 14px 6px}
+.nav-item{display:flex;align-items:center;gap:9px;padding:9px 14px;border-radius:var(--radius);color:rgba(255,255,255,0.7);font-size:13px;cursor:pointer;margin:1px 8px;transition:all .15s;position:relative}
+.nav-item:hover{background:rgba(255,255,255,0.1);color:#fff}
+.nav-item.active{background:rgba(255,255,255,0.15);color:#fff;font-weight:600}
+.nav-item.active::before{content:'';position:absolute;left:-8px;top:50%;transform:translateY(-50%);width:3px;height:20px;background:#E8650A;border-radius:0 3px 3px 0}
+.nav-item svg{width:15px;height:15px;flex-shrink:0}
+.nav-badge{margin-left:auto;background:rgba(232,101,10,0.85);color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px}
+.sidebar-footer{margin-top:auto;padding:14px;border-top:1px solid rgba(255,255,255,0.12)}
+.sidebar-date{font-size:11px;color:rgba(255,255,255,0.4)}
+.team-mini{display:flex;gap:-4px;margin-top:6px}
+.team-avatar-sm{width:24px;height:24px;border-radius:50%;border:2px solid var(--bg2);font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-right:-6px;flex-shrink:0}
+
+/* Main */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 24px;height:56px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.topbar-left{display:flex;align-items:center;gap:12px}
+.topbar-title{font-size:16px;font-weight:700;color:var(--text)}
+.topbar-subtitle{font-size:12px;color:var(--text3)}
+.topbar-actions{display:flex;gap:8px}
+.content{flex:1;overflow-y:auto;padding:24px}
+
+/* Views */
+.view{display:none}.view.active{display:block}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:var(--radius);font-size:13px;font-weight:500;cursor:pointer;border:none;transition:all .15s;text-decoration:none}
+.btn:hover{filter:brightness(1.1)}
+.btn-primary{background:linear-gradient(135deg,#E8650A,#C8540A);color:#fff}
+.btn-ghost{background:var(--bg3);color:var(--text2);border:1px solid var(--border)}
+.btn-ghost:hover{color:var(--text);border-color:var(--border2)}
+.btn-danger{background:var(--red-bg);color:var(--red);border:1px solid rgba(255,107,107,0.2)}
+.btn-sm{padding:5px 10px;font-size:12px}
+.btn svg{width:13px;height:13px}
+
+/* Cards & Containers */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg)}
+.card-header{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.card-header-title{font-size:13px;font-weight:600;color:var(--text)}
+.card-body{padding:16px 18px}
+
+/* Stats */
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-bottom:24px}
+.stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px 18px;position:relative;overflow:hidden}
+.stat-card::after{content:'';position:absolute;top:0;right:0;width:3px;height:100%;border-radius:0 var(--radius-lg) var(--radius-lg) 0}
+.stat-card.s-teal::after{background:var(--teal)}
+.stat-card.s-blue::after{background:var(--blue)}
+.stat-card.s-amber::after{background:var(--amber)}
+.stat-card.s-green::after{background:var(--green)}
+.stat-card.s-purple::after{background:var(--purple)}
+.stat-card.s-red::after{background:var(--red)}
+.stat-label{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px}
+.stat-val{font-size:26px;font-weight:800;color:var(--text)}
+.stat-card.s-teal .stat-val{color:#1B3FAB}
+.stat-card.s-green .stat-val{color:var(--green)}
+.stat-card.s-amber .stat-val{color:var(--amber)}
+
+/* Pipeline */
+.pipeline{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.pipe-col{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px}
+.pipe-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.pipe-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em}
+.pipe-count{font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px}
+.pipe-new .pipe-label{color:#4A5568}.pipe-new .pipe-count{background:#EEF1F6;color:#4A5568}
+.pipe-contacted .pipe-label{color:var(--blue)}.pipe-contacted .pipe-count{background:var(--blue-bg);color:var(--blue)}
+.pipe-qualified .pipe-label{color:var(--amber)}.pipe-qualified .pipe-count{background:var(--amber-bg);color:var(--amber)}
+.pipe-closed .pipe-label{color:var(--green)}.pipe-closed .pipe-count{background:var(--green-bg);color:var(--green)}
+
+/* Lead cards */
+.lead-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:12px;margin-bottom:8px;cursor:pointer;transition:all .15s}
+.lead-card:hover{border-color:#1B3FAB;background:var(--bg4);transform:translateY(-1px)}
+.lc-name{font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px}
+.lc-sub{font-size:11px;color:var(--text3);margin-bottom:8px}
+.lc-tags{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px}
+.lc-footer{display:flex;align-items:center;justify-content:space-between}
+.lc-assignee{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text3)}
+.lc-channels{display:flex;gap:3px}
+.channel-dot{width:18px;height:18px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700}
+.ch-li{background:var(--blue-bg);color:var(--blue)}
+.ch-em{background:var(--teal-bg);color:#1B3FAB}
+.ch-ph{background:var(--green-bg);color:var(--green)}
+.ch-ev{background:var(--purple-bg);color:var(--purple)}
+
+/* Tags */
+.tag{font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;letter-spacing:.02em}
+.tag-cyber{background:var(--red-bg);color:var(--red)}
+.tag-cloud{background:var(--blue-bg);color:var(--blue)}
+.tag-saas{background:var(--green-bg);color:var(--green)}
+.stage-pill{font-size:10px;font-weight:700;padding:3px 9px;border-radius:10px;display:inline-block}
+.sp-new{background:var(--bg4);color:var(--text2)}
+.sp-contacted{background:var(--blue-bg);color:var(--blue)}
+.sp-qualified{background:var(--amber-bg);color:var(--amber)}
+.sp-closed{background:var(--green-bg);color:var(--green)}
+
+/* Table */
+.filter-bar{display:flex;gap:8px;align-items:center;padding:14px 18px;border-bottom:1px solid var(--border);flex-wrap:wrap}
+input[type=text],input[type=email],input[type=date],select,textarea{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:13px;padding:8px 11px;outline:none;transition:border-color .15s;font-family:inherit}
+input[type=text]:focus,input[type=email]:focus,input[type=date]:focus,select:focus,textarea:focus{border-color:#1B3FAB}
+select option{background:var(--bg3)}
+.filter-bar input{width:200px}
+.filter-bar select{width:130px}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;padding:10px 14px;font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;background:var(--bg3);border-bottom:1px solid var(--border)}
+td{padding:11px 14px;border-bottom:1px solid var(--border);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--bg3)}
+.avatar{width:32px;height:32px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0}
+.contact-cell{display:flex;align-items:center;gap:9px}
+.contact-name{font-size:13px;font-weight:500;color:var(--text)}
+.contact-title-sm{font-size:11px;color:var(--text3)}
+
+/* Detail */
+.detail-hdr{display:flex;align-items:center;gap:16px;margin-bottom:22px;padding:20px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-xl)}
+.detail-avatar{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;flex-shrink:0}
+.detail-name{font-size:20px;font-weight:800;color:var(--text)}
+.detail-sub{font-size:13px;color:var(--text2);margin-top:3px}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.info-row{display:flex;align-items:center;gap:8px;padding:9px 0;border-bottom:1px solid var(--border)}
+.info-row:last-child{border-bottom:none}
+.info-label{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;width:100px;flex-shrink:0}
+.info-val{font-size:13px;color:var(--text);flex:1}
+
+/* Activity log */
+.activity-item{padding:12px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:8px;display:flex;gap:10px}
+.activity-icon{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:12px}
+.activity-meta{font-size:11px;color:var(--text3);margin-bottom:2px}
+.activity-text{font-size:13px;color:var(--text)}
+.activity-notes{font-size:12px;color:var(--text2);margin-top:3px}
+
+/* Task */
+.task-item{display:flex;gap:10px;align-items:flex-start;padding:11px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:8px}
+.task-cb{width:16px;height:16px;border-radius:4px;border:2px solid var(--border2);background:transparent;cursor:pointer;flex-shrink:0;margin-top:1px;appearance:none;transition:all .15s}
+.task-cb:checked{background:#1B3FAB;border-color:#1B3FAB}
+.task-text-wrap{flex:1}
+.task-text{font-size:13px;color:var(--text)}
+.task-text.done{text-decoration:line-through;color:var(--text3)}
+.task-meta{font-size:11px;color:var(--text3);margin-top:2px}
+
+/* Modal */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:100;align-items:flex-start;justify-content:center;padding:50px 20px;overflow-y:auto;backdrop-filter:blur(3px)}
+.modal-overlay.open{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-xl);padding:24px;width:100%;max-width:520px;box-shadow:var(--shadow)}
+.modal h2{font-size:16px;font-weight:700;color:var(--text);margin-bottom:20px;display:flex;align-items:center;gap:8px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.form-row.full{grid-template-columns:1fr}
+.form-group label{display:block;font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+textarea{resize:vertical;min-height:70px;width:100%}
+.modal-footer{display:flex;justify-content:flex-end;gap:8px;margin-top:20px;padding-top:16px;border-top:1px solid var(--border)}
+.checkbox-group{display:flex;gap:14px;margin-top:6px;flex-wrap:wrap}
+.checkbox-group label{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text);cursor:pointer;text-transform:none;letter-spacing:0;font-weight:400}
+input[type=checkbox]{width:14px;height:14px;accent-color:#E8650A;cursor:pointer}
+
+/* Team manager */
+.team-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.team-avatar-lg{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;flex-shrink:0}
+.team-info{flex:1}
+.team-name{font-size:13px;font-weight:600;color:var(--text)}
+.team-stats{font-size:11px;color:var(--text3);margin-top:2px}
+
+/* Toast */
+.toast{position:fixed;bottom:24px;right:24px;background:#1B3FAB;color:#fff;border:1px solid #1535A0;color:var(--text);padding:10px 18px;border-radius:var(--radius);font-size:13px;z-index:200;opacity:0;transition:opacity .3s;pointer-events:none;display:flex;align-items:center;gap:8px}
+.toast.show{opacity:1}
+.toast-dot{width:6px;height:6px;border-radius:50%;background:#E8650A;flex-shrink:0}
+
+/* Empty */
+.empty-state{text-align:center;padding:32px 0;color:var(--text3);font-size:13px}
+.empty-icon{font-size:28px;margin-bottom:8px;opacity:.4}
+
+/* Back btn */
+.back-btn{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--text3);cursor:pointer;margin-bottom:16px;border:none;background:none;padding:0;transition:color .15s}
+.back-btn:hover{color:#1B3FAB}
+
+/* Channel legend */
+.channel-legend{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+.ch-legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text2)}
+
+/* Activity timeline */
+.timeline{position:relative;padding-left:20px}
+.timeline::before{content:'';position:absolute;left:7px;top:0;bottom:0;width:1px;background:var(--border)}
+.tl-item{position:relative;margin-bottom:12px}
+.tl-dot{position:absolute;left:-17px;top:10px;width:10px;height:10px;border-radius:50%;border:2px solid var(--bg2)}
+.tl-li .tl-dot{background:var(--blue)}
+.tl-em .tl-dot{background:var(--teal)}
+.tl-ph .tl-dot{background:var(--green)}
+.tl-ev .tl-dot{background:var(--purple)}
+.tl-tk .tl-dot{background:var(--amber)}
+
+/* Gradient text */
+.grad-text{background:linear-gradient(135deg,var(--teal),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+/* ── Team Pipeline View ─────────────────────────────── */
+.pipeline-view-toggle{display:flex;gap:8px;align-items:center;margin-bottom:14px;flex-wrap:wrap}
+.pvt-btn{padding:5px 13px;border-radius:var(--radius);font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--bg3);color:var(--text2);transition:all .15s}
+.pvt-btn.active{background:#1B3FAB;color:#fff;border-color:#1B3FAB}
+.member-filter-chips{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto}
+.mf-chip{padding:4px 11px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--text3);transition:all .15s}
+.mf-chip.active{color:#fff;border-color:transparent}
+.team-pipeline{display:flex;gap:14px;overflow-x:auto;padding-bottom:8px}
+.tp-col{min-width:220px;flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden}
+.tp-col-hdr{padding:11px 13px 10px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.tp-member-avatar{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;flex-shrink:0}
+.tp-member-name{font-size:12px;font-weight:700;color:var(--text)}
+.tp-member-role{font-size:10px;color:var(--text3)}
+.tp-cards{padding:8px;display:flex;flex-direction:column;gap:6px;min-height:80px}
+.tp-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:10px;cursor:pointer;transition:all .15s}
+.tp-card:hover{border-color:#1B3FAB;background:var(--bg4)}
+.tp-card-name{font-size:12px;font-weight:600;color:var(--text);margin-bottom:2px}
+.tp-card-sub{font-size:11px;color:var(--text3);margin-bottom:6px}
+.tp-card-footer{display:flex;align-items:center;justify-content:space-between}
+.neg-dot{width:7px;height:7px;border-radius:50%;background:var(--red);display:inline-block;margin-right:3px;vertical-align:middle}
+.comment-count-sm{font-size:10px;color:var(--text3);display:flex;align-items:center;gap:3px}
+/* ── Comments ───────────────────────────────────────── */
+.comments-panel{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);margin-top:14px}
+.cp-header{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.cp-title{font-size:13px;font-weight:700;color:var(--text)}
+.cp-close{background:none;border:none;cursor:pointer;color:var(--text3);font-size:18px;line-height:1;padding:0 2px}
+.cp-body{padding:12px 16px;display:flex;flex-direction:column;gap:8px;max-height:340px;overflow-y:auto}
+.cp-empty{font-size:12px;color:var(--text3);text-align:center;padding:18px 0}
+.cp-comment{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:10px 12px}
+.cp-comment-meta{display:flex;align-items:center;gap:6px;margin-bottom:5px;flex-wrap:wrap}
+.cp-author{font-size:12px;font-weight:700;color:var(--text)}
+.cp-role-badge{font-size:10px;font-weight:700;padding:1px 7px;border-radius:8px}
+.cp-role-bde{background:var(--blue-bg);color:var(--blue)}
+.cp-role-am{background:var(--amber-bg);color:var(--amber)}
+.cp-time{font-size:10px;color:var(--text3);margin-left:auto}
+.cp-text{font-size:12px;color:var(--text2);line-height:1.5}
+.cp-sentiment{font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;margin-top:5px;display:inline-block}
+.sent-positive{background:var(--green-bg);color:var(--green)}
+.sent-neutral{background:var(--bg4);color:var(--text2)}
+.sent-negative{background:var(--red-bg);color:var(--red)}
+.cp-add-form{padding:12px 16px;border-top:1px solid var(--border)}
+.cp-textarea{width:100%;font-size:12px;border:1px solid var(--border);border-radius:var(--radius);padding:8px 10px;background:var(--bg3);color:var(--text);resize:none;min-height:60px;font-family:inherit}
+.cp-textarea:focus{border-color:#1B3FAB;outline:none}
+.sent-btn{font-size:11px;font-weight:600;padding:4px 9px;border-radius:8px;border:1px solid var(--border);cursor:pointer;background:transparent;color:var(--text3);transition:all .15s}
+.sent-btn.sel-positive{background:var(--green-bg);color:var(--green);border-color:var(--green)}
+.sent-btn.sel-neutral{background:var(--bg4);color:var(--text2);border-color:var(--border2)}
+.sent-btn.sel-negative{background:var(--red-bg);color:var(--red);border-color:var(--red)}
+
+
+/* ── Team Pipeline View ──────────────────────────────────────────────────── */
+.pipeline-view-toggle{display:flex;gap:8px;align-items:center;margin-bottom:14px;flex-wrap:wrap}
+.pvt-btn{padding:5px 13px;border-radius:var(--radius);font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--bg3);color:var(--text2);transition:all .15s}
+.pvt-btn.active{background:#1B3FAB;color:#fff;border-color:#1B3FAB}
+.member-filter-chips{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto}
+.mf-chip{padding:4px 11px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--text3);transition:all .15s}
+.mf-chip.active{color:#fff;border-color:transparent}
+.team-pipeline{display:flex;gap:14px;overflow-x:auto;padding-bottom:8px}
+.tp-col{min-width:220px;flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden}
+.tp-col-hdr{padding:11px 13px 10px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.tp-member-avatar{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;flex-shrink:0}
+.tp-member-name{font-size:12px;font-weight:700;color:var(--text)}
+.tp-member-role{font-size:10px;color:var(--text3)}
+.tp-cards{padding:8px;display:flex;flex-direction:column;gap:6px;min-height:80px}
+.tp-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:10px;cursor:pointer;transition:all .15s}
+.tp-card:hover{border-color:#1B3FAB;background:var(--bg4)}
+.tp-card-name{font-size:12px;font-weight:600;color:var(--text);margin-bottom:2px}
+.tp-card-sub{font-size:11px;color:var(--text3);margin-bottom:6px}
+.tp-card-footer{display:flex;align-items:center;justify-content:space-between}
+.neg-dot{width:7px;height:7px;border-radius:50%;background:var(--red);display:inline-block;margin-right:3px;vertical-align:middle}
+.comment-count-sm{font-size:10px;color:var(--text3);display:flex;align-items:center;gap:3px}
+
+/* ── Comments Panel ──────────────────────────────────────────────────────── */
+.comments-panel{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);margin-top:14px}
+.cp-header{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.cp-title{font-size:13px;font-weight:700;color:var(--text)}
+.cp-close{background:none;border:none;cursor:pointer;color:var(--text3);font-size:18px;line-height:1;padding:0 2px}
+.cp-lead-info{padding:10px 16px;border-bottom:1px solid var(--border);background:var(--bg3)}
+.cp-lead-name{font-size:13px;font-weight:700;color:var(--text)}
+.cp-lead-sub{font-size:11px;color:var(--text3);margin-top:2px}
+.cp-body{padding:12px 16px;display:flex;flex-direction:column;gap:8px;max-height:340px;overflow-y:auto}
+.cp-empty{font-size:12px;color:var(--text3);text-align:center;padding:18px 0}
+.cp-comment{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:10px 12px}
+.cp-comment-meta{display:flex;align-items:center;gap:6px;margin-bottom:5px;flex-wrap:wrap}
+.cp-author{font-size:12px;font-weight:700;color:var(--text)}
+.cp-role-badge{font-size:10px;font-weight:700;padding:1px 7px;border-radius:8px}
+.cp-role-bde{background:var(--blue-bg);color:var(--blue)}
+.cp-role-am{background:var(--amber-bg);color:var(--amber)}
+.cp-time{font-size:10px;color:var(--text3);margin-left:auto}
+.cp-text{font-size:12px;color:var(--text2);line-height:1.5}
+.cp-sentiment{font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;margin-top:5px;display:inline-block}
+.sent-positive{background:var(--green-bg);color:var(--green)}
+.sent-neutral{background:var(--bg4);color:var(--text2)}
+.sent-negative{background:var(--red-bg);color:var(--red)}
+.cp-add-form{padding:12px 16px;border-top:1px solid var(--border)}
+.cp-form-row{display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+.cp-sent-btns{display:flex;gap:5px;align-items:center}
+.cp-sent-label{font-size:11px;color:var(--text3);white-space:nowrap}
+.sent-btn{font-size:11px;font-weight:600;padding:4px 9px;border-radius:8px;border:1px solid var(--border);cursor:pointer;background:transparent;color:var(--text3);transition:all .15s}
+.sent-btn.sel-positive{background:var(--green-bg);color:var(--green);border-color:var(--green)}
+.sent-btn.sel-neutral{background:var(--bg4);color:var(--text2);border-color:var(--border2)}
+.sent-btn.sel-negative{background:var(--red-bg);color:var(--red);border-color:var(--red)}
+.cp-textarea{width:100%;font-size:12px;border:1px solid var(--border);border-radius:var(--radius);padding:8px 10px;background:var(--bg3);color:var(--text);resize:none;min-height:60px;font-family:inherit}
+.cp-textarea:focus{border-color:#1B3FAB;outline:none}
+.cp-submit-row{display:flex;gap:8px;align-items:center;justify-content:space-between;margin-top:6px;flex-wrap:wrap}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body>
+<div class="app">
+<!-- Sidebar -->
+<div class="sidebar">
+  <div class="logo-wrap">
+    <div class="logo-mark" style="flex-direction:column;align-items:flex-start;gap:4px">
+      <img src="https://tekxera.com/wp-content/uploads/2023/03/TekXera_Color.png"
+           alt="TekXera"
+           onerror="this.onerror=null;this.src='';this.style.display='none';document.getElementById('tx-fallback').style.display='flex';"
+           style="height:38px;width:auto;object-fit:contain;filter:brightness(0) invert(1);">
+      <div id="tx-fallback" style="display:none;align-items:center;gap:8px">
+        <div class="logo-icon">TX</div>
+        <div class="logo-text">TekXera</div>
+      </div>
+    </div>
+    <div class="logo-sub">Client Acquisition CRM</div>
+  </div>
+  <div class="sidebar-nav">
+    <div class="nav-section">Overview</div>
+    <div class="nav-item active" onclick="showView('dashboard',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      Dashboard
+    </div>
+    <div class="nav-item" onclick="showView('pipeline',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="4" height="18" rx="1"/><rect x="10" y="3" width="4" height="13" rx="1"/><rect x="17" y="3" width="4" height="8" rx="1"/></svg>
+      Pipeline
+      <span class="nav-badge" id="nb-pipeline">0</span>
+    </div>
+    <div class="nav-section">Manage</div>
+    <div class="nav-item" onclick="showView('leads',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      All leads
+    </div>
+    <div class="nav-item" onclick="showView('activity',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      Activity log
+      <span class="nav-badge" id="nb-activity">0</span>
+    </div>
+    <div class="nav-item" onclick="showView('tasks',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      Tasks
+      <span class="nav-badge" id="nb-tasks">0</span>
+    </div>
+    <div class="nav-section">Settings</div>
+    <div class="nav-item" onclick="showView('team',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/><path d="M21 21v-2a4 4 0 0 0-3-3.87"/></svg>
+      Team members
+    </div>
+  </div>
+  <div class="sidebar-footer">
+    <div class="sidebar-date" id="footer-date"></div>
+    <div class="team-mini" id="team-mini-avatars"></div>
+  </div>
+</div>
+
+<!-- Main -->
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-left">
+      <div>
+        <div class="topbar-title" id="topbar-title">Dashboard</div>
+        <div class="topbar-subtitle" id="topbar-sub">Welcome back</div>
+      </div>
+    </div>
+    <div class="topbar-actions">
+      <span id="sync-indicator" style="font-size:11px;font-weight:600;cursor:pointer;padding:4px 8px;border-radius:var(--radius);border:1px solid var(--border);white-space:nowrap;color:var(--text3)" onclick="openSyncSetup()" title="Set up shared team sync">○ Local only</span>
+      <button class="btn btn-ghost btn-sm" onclick="document.getElementById('csv-upload').click()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        Upload leads
+      </button>
+      <input type="file" id="csv-upload" accept=".csv,.xlsx,.xls" style="display:none" onchange="handleCSVUpload(event)">
+      <button class="btn btn-ghost btn-sm" onclick="exportCSV()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Export CSV
+      </button>
+      <button class="btn btn-primary btn-sm" onclick="openAddLead()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Add lead
+      </button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- Dashboard -->
+    <div id="view-dashboard" class="view active">
+      <div class="stat-grid" id="stats"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        <div class="card">
+          <div class="card-header"><span class="card-header-title">Recent activity</span></div>
+          <div class="card-body" id="dash-activity" style="padding:12px 16px"></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-header-title">Open tasks</span></div>
+          <div class="card-body" id="dash-tasks" style="padding:12px 16px"></div>
+        </div>
+      </div>
+      <div style="margin-top:16px" class="card">
+        <div class="card-header"><span class="card-header-title">Team performance</span></div>
+        <div class="card-body" id="dash-team"></div>
+      </div>
+    </div>
+
+    <!-- Pipeline -->
+    <div id="view-pipeline" class="view">
+      <div class="pipeline-view-toggle">
+        <button class="pvt-btn active" id="pvt-all" onclick="setPipelineView('all')">All pipeline</button>
+        <button class="pvt-btn" id="pvt-team" onclick="setPipelineView('team')">Team view</button>
+        <div class="member-filter-chips" id="member-filter-chips"></div>
+      </div>
+      <div id="pipeline-board-all"><div class="pipeline" id="pipeline-board"></div></div>
+      <div id="pipeline-board-team" style="display:none"></div>
+      <div id="comments-panel-container"></div>
+    </div>
+
+    <!-- All leads -->
+    <div id="view-leads" class="view">
+      <div class="card">
+        <div class="filter-bar">
+          <input type="text" id="search-input" placeholder="Search name, company, email…" oninput="renderTable()">
+          <select id="filter-stage" onchange="renderTable()">
+            <option value="">All stages</option>
+            <option value="new">New</option>
+            <option value="contacted">Contacted</option>
+            <option value="qualified">Qualified</option>
+            <option value="closed">Closed</option>
+          </select>
+          <select id="filter-assignee" onchange="renderTable()">
+            <option value="">All assignees</option>
+          </select>
+          <select id="filter-service" onchange="renderTable()">
+            <option value="">All services</option>
+            <option value="cyber">Cybersecurity</option>
+            <option value="cloud">IT / Cloud</option>
+            <option value="saas">Software / SaaS</option>
+          </select>
+          <select id="filter-channel" onchange="renderTable()">
+            <option value="">All channels</option>
+            <option value="linkedin">LinkedIn</option>
+            <option value="email">Email</option>
+            <option value="phone">Phone</option>
+            <option value="event">In-person</option>
+          </select>
+        </div>
+        <div style="overflow-x:auto">
+          <table>
+            <thead><tr>
+              <th style="width:190px">Contact</th>
+              <th style="width:150px">Company</th>
+              <th style="width:100px">Stage</th>
+              <th style="width:120px">Services</th>
+              <th style="width:120px">Assigned to</th>
+              <th style="width:110px">Contacted via</th>
+              <th style="width:95px">Date added</th>
+              <th style="width:70px"></th>
+            </tr></thead>
+            <tbody id="leads-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Activity log -->
+    <div id="view-activity" class="view">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+        <div style="font-size:16px;font-weight:700">Activity log</div>
+        <button class="btn btn-primary btn-sm" onclick="openLogActivity()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Log activity
+        </button>
+      </div>
+      <div class="channel-legend">
+        <div class="ch-legend-item"><div class="channel-dot ch-li">LI</div> LinkedIn</div>
+        <div class="ch-legend-item"><div class="channel-dot ch-em">EM</div> Email</div>
+        <div class="ch-legend-item"><div class="channel-dot ch-ph">PH</div> Phone call</div>
+        <div class="ch-legend-item"><div class="channel-dot ch-ev">EV</div> In-person / Event</div>
+      </div>
+      <div id="activity-list"></div>
+    </div>
+
+    <!-- Tasks -->
+    <div id="view-tasks" class="view">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+        <div style="font-size:16px;font-weight:700">Tasks</div>
+        <button class="btn btn-primary btn-sm" onclick="openAddTask()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Add task
+        </button>
+      </div>
+      <div id="tasks-list"></div>
+    </div>
+
+    <!-- Team -->
+    <div id="view-team" class="view">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+        <div style="font-size:16px;font-weight:700">Team members</div>
+        <button class="btn btn-primary btn-sm" onclick="openAddTeamMember()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Add member
+        </button>
+      </div>
+      <div id="team-list"></div>
+    </div>
+
+    <!-- Detail -->
+    <div id="view-detail" class="view">
+      <button class="back-btn" onclick="showView('pipeline',null)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="15 18 9 12 15 6"/></svg>
+        Back to pipeline
+      </button>
+      <div id="detail-content"></div>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<!-- Modals -->
+<div class="modal-overlay" id="modal-lead">
+  <div class="modal">
+    <h2 id="modal-lead-title">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      Add new lead
+    </h2>
+    <div class="form-row">
+      <div class="form-group"><label>First name</label><input type="text" id="f-fname" placeholder="Jane"></div>
+      <div class="form-group"><label>Last name</label><input type="text" id="f-lname" placeholder="Smith"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Job title</label><input type="text" id="f-title" placeholder="CTO"></div>
+      <div class="form-group"><label>Company</label><input type="text" id="f-company" placeholder="Acme Ltd"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Email</label><input type="email" id="f-email" placeholder="jane@acme.com"></div>
+      <div class="form-group"><label>Country</label><input type="text" id="f-country" placeholder="United Kingdom"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Stage</label>
+        <select id="f-stage"><option value="new">New</option><option value="contacted">Contacted</option><option value="qualified">Qualified</option><option value="closed">Closed</option></select>
+      </div>
+      <div class="form-group"><label>Assigned to</label><select id="f-assignee"><option value="">Unassigned</option></select></div>
+    </div>
+    <div class="form-row full">
+      <div class="form-group"><label>Services interested in</label>
+        <div class="checkbox-group">
+          <label><input type="checkbox" id="f-cyber"> Cybersecurity</label>
+          <label><input type="checkbox" id="f-cloud"> IT / Cloud</label>
+          <label><input type="checkbox" id="f-saas"> Software / SaaS</label>
+        </div>
+      </div>
+    </div>
+    <div class="form-row full"><div class="form-group"><label>Notes</label><textarea id="f-notes" placeholder="Why TekXera? Any context…"></textarea></div></div>
+    <input type="hidden" id="f-edit-id">
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-lead')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveLead()">Save lead</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-activity">
+  <div class="modal">
+    <h2>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      Log activity
+    </h2>
+    <div class="form-row full"><div class="form-group"><label>Lead</label><select id="a-lead"><option value="">Select a lead…</option></select></div></div>
+    <div class="form-row">
+      <div class="form-group"><label>Channel</label>
+        <select id="a-channel">
+          <option value="linkedin">💼 LinkedIn message</option>
+          <option value="email">✉️ Email</option>
+          <option value="phone">📞 Phone call</option>
+          <option value="event">🤝 In-person / Event</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Date</label><input type="date" id="a-date"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Logged by</label><select id="a-by"><option value="">Select member…</option></select></div>
+      <div class="form-group"><label>Outcome</label>
+        <select id="a-outcome">
+          <option value="No response yet">No response yet</option>
+          <option value="Responded — interested">Responded — interested</option>
+          <option value="Responded — not now">Responded — not now</option>
+          <option value="Meeting booked">Meeting booked</option>
+          <option value="Proposal sent">Proposal sent</option>
+          <option value="Closed — won">Closed — won</option>
+          <option value="Closed — lost">Closed — lost</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row full"><div class="form-group"><label>Notes</label><textarea id="a-notes" placeholder="What was discussed or sent?"></textarea></div></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-activity')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveActivity()">Save activity</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-task">
+  <div class="modal">
+    <h2>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      Add task
+    </h2>
+    <div class="form-row full"><div class="form-group"><label>Task description</label><input type="text" id="t-text" placeholder="e.g. Follow up with David Higgins at Eftsure"></div></div>
+    <div class="form-row">
+      <div class="form-group"><label>Due date</label><input type="date" id="t-due"></div>
+      <div class="form-group"><label>Assigned to</label><select id="t-assignee"><option value="">Unassigned</option></select></div>
+    </div>
+    <div class="form-row full"><div class="form-group"><label>Link to lead (optional)</label><select id="t-lead"><option value="">— no lead —</option></select></div></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-task')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveTask()">Save task</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-team">
+  <div class="modal">
+    <h2>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      Add team member
+    </h2>
+    <div class="form-row full"><div class="form-group"><label>Full name</label><input type="text" id="tm-name" placeholder="e.g. Sarah Johnson"></div></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-team')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveTeamMember()">Add member</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><div class="toast-dot"></div><span id="toast-msg"></span></div>
+
+<script>
+// ── JSONBin Shared Cloud Storage ─────────────────────────────────────────
+const JSONBIN_API='https://api.jsonbin.io/v3';
+let _binId=localStorage.getItem('tx-bin-id')||null;
+let _binKey=localStorage.getItem('tx-bin-key')||null;
+let _syncTimer=null;
+
+function updateSyncIndicator(state){
+  const el=document.getElementById('sync-indicator');if(!el)return;
+  const s={saved:['● Synced','var(--green)'],saving:['↻ Saving…','var(--amber)'],error:['✕ Sync error','var(--red)'],offline:['○ Local only','var(--text3)'],loading:['↻ Loading…','var(--amber)']}[state]||['○ Local','var(--text3)'];
+  el.textContent=s[0];el.style.color=s[1];
+}
+async function cloudLoad(){
+  if(!_binId||!_binKey)return null;
+  try{const r=await fetch(JSONBIN_API+'/b/'+_binId+'/latest',{headers:{'X-Master-Key':_binKey}});if(!r.ok)return null;const j=await r.json();return j.record;}catch(e){return null;}
+}
+async function cloudSave(){
+  if(!_binId||!_binKey)return;
+  updateSyncIndicator('saving');
+  try{await fetch(JSONBIN_API+'/b/'+_binId,{method:'PUT',headers:{'Content-Type':'application/json','X-Master-Key':_binKey},body:JSON.stringify({leads,tasks,activity,team})});updateSyncIndicator('saved');}
+  catch(e){updateSyncIndicator('error');}
+}
+async function openSyncSetup(){
+  document.getElementById('modal-sync').classList.add('open');
+  if(_binId){document.getElementById('sync-bin-display').textContent=_binId;document.getElementById('sync-bin-display-row').style.display='block';}
+  if(_binKey)document.getElementById('sync-master-key').value=_binKey;
+}
+async function saveSyncSettings(){
+  const key=document.getElementById('sync-master-key').value.trim();
+  const existingBin=document.getElementById('sync-bin-id-input').value.trim();
+  if(!key){alert('Please enter your JSONBin Master Key.');return;}
+  _binKey=key;localStorage.setItem('tx-bin-key',key);
+  if(existingBin){
+    _binId=existingBin;localStorage.setItem('tx-bin-id',_binId);
+    updateSyncIndicator('loading');
+    const data=await cloudLoad();
+    if(data){leads=data.leads||leads;tasks=data.tasks||tasks;activity=data.activity||activity;team=data.team||team;
+      localStorage.setItem('tx-leads-v2',JSON.stringify(leads));localStorage.setItem('tx-tasks-v2',JSON.stringify(tasks));
+      localStorage.setItem('tx-activity-v2',JSON.stringify(activity));localStorage.setItem('tx-team-v2',JSON.stringify(team));
+      renderDashboard();renderPipeline();renderMemberFilterChips();updateBadges();
+      updateSyncIndicator('saved');toast('Synced with shared CRM!');
+    }else{updateSyncIndicator('error');toast('Could not load — check ID and key.');}
+  }else{
+    updateSyncIndicator('saving');
+    try{const r=await fetch(JSONBIN_API+'/b',{method:'POST',headers:{'Content-Type':'application/json','X-Master-Key':key,'X-Bin-Name':'TekXera CRM','X-Bin-Private':'true'},body:JSON.stringify({leads,tasks,activity,team})});
+      const j=await r.json();_binId=j.metadata?.id||null;
+      if(_binId){localStorage.setItem('tx-bin-id',_binId);document.getElementById('sync-bin-display').textContent=_binId;document.getElementById('sync-bin-display-row').style.display='block';updateSyncIndicator('saved');toast('Sync bin created! Share the Bin ID with your team.');}
+      else{updateSyncIndicator('error');toast('Could not create bin — check your Master Key.');}
+    }catch(e){updateSyncIndicator('error');toast('Network error.');}
+  }
+  closeModal('modal-sync');
+}
+// Poll for remote changes every 30s
+setInterval(async()=>{
+  if(!_binId||!_binKey)return;
+  const data=await cloudLoad();if(!data)return;
+  let changed=false;
+  const localIds=new Set(leads.map(l=>l.id));
+  (data.leads||[]).forEach(rl=>{
+    if(!localIds.has(rl.id)){leads.push(rl);changed=true;}
+    else{const ll=leads.find(l=>l.id===rl.id);if(ll&&JSON.stringify(ll)!==JSON.stringify(rl)){Object.assign(ll,rl);changed=true;}}
+  });
+  if((data.activity||[]).length>activity.length){activity=data.activity;changed=true;}
+  if((data.tasks||[]).length!==tasks.length){tasks=data.tasks;changed=true;}
+  if(changed){renderDashboard();renderPipeline();updateBadges();updateSyncIndicator('saved');}
+},30000);
+
+const LS={leads:'tx-leads-v2',tasks:'tx-tasks-v2',activity:'tx-activity-v2',team:'tx-team-v2'};
+
+const SEED_TEAM = [
+  {id:'u1', name:'You', color:'#00D4AA'},
+  {id:'u2', name:'Client Acquisition', color:'#4A9EFF'},
+];
+
+const COLORS = ['#00D4AA','#4A9EFF','#FFB547','#A78BFA','#F472B6','#4ADE80','#FF6B6B','#FB923C'];
+
+const SEED_LEADS = [
+  {id:'l1',fname:'Mati',lname:'Staniszewski',title:'Co-Founder',company:'ElevenLabs',email:'mati@elevenlabs.io',country:'UK',stage:'new',assignee:'',services:['cyber','saas'],notes:'Scaling AI SaaS — needs data privacy & security',channels:[],created:'2026-06-17'},
+  {id:'l2',fname:'Sebastian',lname:'Kielmann',title:'CTO',company:'CATCH',email:'sebastian@catch-talents.de',country:'Germany',stage:'new',assignee:'',services:['saas','cyber'],notes:'EdTech SaaS with GDPR obligations',channels:[],created:'2026-06-17'},
+  {id:'l3',fname:'Muhammad',lname:'Iqbal',title:'CTO',company:'NGBS',email:'iqbal@ngbs.co.uk',country:'UK',stage:'new',assignee:'',services:['cyber','cloud','saas'],notes:'Cloud/SaaS dev shop — fits all 3 service areas',channels:[],created:'2026-06-17'},
+  {id:'l4',fname:'Anthony',lname:'Whyte',title:'Managing Director',company:'Talent International',email:'anthony.whyte@talentinternational.com',country:'Australia',stage:'new',assignee:'',services:['cyber','cloud'],notes:'ISO 27001 certified; Cyber & Cloud/DevOps specialities',channels:[],created:'2026-06-17'},
+  {id:'l5',fname:'Ryan',lname:'Milligan',title:'CRO',company:'QuotaPath',email:'ryan.milligan@quotapath.com',country:'USA',stage:'new',assignee:'',services:['cloud','saas'],notes:'Growing SaaS with CRM/ERP cloud integrations',channels:[],created:'2026-06-17'},
+  {id:'l6',fname:'Lycia',lname:'Lobo',title:'COO',company:'Design Museum',email:'lycia.lobo@designmuseum.org',country:'UK',stage:'new',assignee:'',services:['cyber','cloud'],notes:'Needs cloud modernisation & data protection',channels:[],created:'2026-06-17'},
+  {id:'l7',fname:'Guy',lname:'Mason',title:'Chairman',company:'TRL',email:'gmason@trl.co.uk',country:'UK',stage:'new',assignee:'',services:['cloud','saas'],notes:'Smart Mobility IoT testbed & traffic mgmt software',channels:[],created:'2026-06-17'},
+  {id:'l8',fname:'André',lname:'Witt',title:'Head of IT',company:'Dr. Loges + Co.',email:'witt@loges.de',country:'Germany',stage:'new',assignee:'',services:['cyber','cloud'],notes:'Regulated pharma — secure infra & compliance',channels:[],created:'2026-06-17'},
+  {id:'l9',fname:'Christopher',lname:'Franskin',title:'CIO',company:'ERGO Insurance',email:'christopher.franskin@ergo.be',country:'Belgium',stage:'new',assignee:'',services:['cyber','cloud'],notes:'Insurance CIO — cybersecurity & cloud transformation',channels:[],created:'2026-06-17'},
+  {id:'l10',fname:'Riccardo',lname:'Picca',title:'Non-Exec Director',company:'MIPU Predictive Hub',email:'riccardo.picca@ext.mipu.eu',country:'Italy',stage:'new',assignee:'',services:['cloud','saas'],notes:'Microsoft MIMA winner — IoT cloud & AI SaaS',channels:[],created:'2026-06-17'},
+  {id:'l11',fname:'Kaul',lname:'Himanshu',title:'Co-Founder & CPO',company:'WooHoo',email:'himanshu@smartbeings.com',country:'USA',stage:'new',assignee:'',services:['cyber','saas'],notes:'Voice AI with explicit security & encryption focus',channels:[],created:'2026-06-17'},
+  {id:'l12',fname:'Gabriel',lname:'Hubert',title:'Co-Founder',company:'Dust',email:'gabriel@dust.tt',country:'France',stage:'new',assignee:'',services:['cyber','saas'],notes:'Enterprise AI — data privacy, access controls & SaaS dev',channels:[],created:'2026-06-17'},
+  {id:'l13',fname:'Jaime',lname:'Ramirez',title:'CIO',company:'Laboratorios Kener',email:'jaime.sanchez@kener.com.mx',country:'Mexico',stage:'new',assignee:'',services:['cyber','cloud'],notes:'Pharma CIO — regulatory compliance & cloud infra',channels:[],created:'2026-06-17'},
+  {id:'l14',fname:'Brett',lname:'Taylor',title:'Co-Founder',company:'Sierra',email:'bret@sierra.ai',country:'USA',stage:'new',assignee:'',services:['cloud','saas'],notes:'Fast-growing conversational AI — cloud & SaaS scaling',channels:[],created:'2026-06-17'},
+  {id:'l15',fname:'David',lname:'Higgins',title:'CTO',company:'Eftsure',email:'david@eftsure.com.au',country:'Australia',stage:'new',assignee:'',services:['cyber','saas'],notes:'Cybersecurity IS their product — platform hardening & dev',channels:[],created:'2026-06-17'},
+  {id:'l16',fname:'Mark',lname:'Sampford',title:'Head of Salesforce & CRM',company:'Square One Resources',email:'mark.sampford@squareoneresources.com',country:'UK',stage:'new',assignee:'',services:['cloud','saas'],notes:'CRM cloud infra & Salesforce SaaS integrations',channels:[],created:'2026-06-17'},
+  {id:'l17',fname:'Karim',lname:'Tarmohamed',title:'CRO',company:'Snorkel AI',email:'karim@snorkel.ai',country:'USA',stage:'new',assignee:'',services:['cloud','saas'],notes:'AI training platform at scale — cloud + SaaS dev',channels:[],created:'2026-06-17'},
+  {id:'l18',fname:'Mirko',lname:'Novakovic',title:'CEO',company:'Dash0',email:'mirko.novakovic@dash0.com',country:'Germany',stage:'new',assignee:'',services:['cloud','saas'],notes:'Cloud-native observability startup',channels:[],created:'2026-06-17'},
+  {id:'l19',fname:'Shane',lname:'Anglin',title:'SVP Information Security',company:'Triad Financial Services',email:'sanglin@triadfs.com',country:'USA',stage:'new',assignee:'',services:['cyber'],notes:'SVP InfoSec at 47-state financial lender — direct cyber lead',channels:[],created:'2026-06-17'},
+  {id:'l20',fname:'Shane',lname:'Anglin',title:'CISO',company:'Step Up For Students',email:'sanglin@stepupforstudents.org',country:'USA',stage:'new',assignee:'',services:['cyber'],notes:'CISO at nonprofit. Lusha 18 Jun 2026.',channels:[],created:'2026-06-18'},
+  {id:'l21',fname:'Ahmed',lname:'Rasel',title:'Co-Founder & Chief Digital Officer',company:'Musemind UX Design Agency',email:'rasel.ahmed@musemind.agency',country:'Germany',stage:'new',assignee:'',services:['saas','cloud'],notes:'Global UX design agency. Lusha 18 Jun 2026.',channels:[],created:'2026-06-18'},
+  {id:'l22',fname:'Mike',lname:'Renwick',title:'Director of Data and AI',company:'Lunate',email:'mrenwick@lunate.com',country:'UAE',stage:'new',assignee:'',services:['cloud','saas'],notes:'Director Data & AI, finance firm Abu Dhabi. Lusha 18 Jun 2026.',channels:[],created:'2026-06-18'},
+  {id:'l23',fname:'Demis',lname:'Hassabis',title:'Founder & CEO',company:'Isomorphic Labs',email:'demis@isomorphiclabs.com',country:'United Kingdom',stage:'new',assignee:'',services:['saas','cloud'],notes:'Founder AI/healthcare lab. Lusha 18 Jun 2026.',channels:[],created:'2026-06-18'},
+  {id:'l24',fname:'Valentin',lname:'Storz',title:'Chief Revenue Officer',company:'Varjo',email:'valentin.storz@varjo.com',country:'Germany',stage:'new',assignee:'',services:['saas','cloud'],notes:'CRO at XR/VR software company. Lusha 18 Jun 2026.',channels:[],created:'2026-06-18'},
+  {id:'l25',fname:'Max',lname:'Junestrand',title:'CEO & Co-Founder',company:'Legora',email:'max@leya.law',country:'USA',stage:'new',assignee:'',services:['saas'],notes:'CEO of legal AI SaaS platform. Lusha 18 Jun 2026.',channels:[],created:'2026-06-18'},
+  {id:'l26',fname:'Paulo',lname:'De Carvalho Pinto',title:'Chief Operating Officer',company:'B&B Hotels',email:'paulo.pinto@hotel-bb.com',country:'Portugal',stage:'new',assignee:'',services:['cloud','cyber'],notes:'COO hotel chain - cloud & data security. Lusha 18 Jun 2026.',channels:[],created:'2026-06-18'},
+  {id:'l27',fname:'Peter',lname:'Howells',title:'VP Australia & New Zealand',company:'PowerGate Group',email:'peter.howells@powergatesoftware.com',country:'Australia',stage:'new',assignee:'',services:['saas','cloud'],notes:'VP at tech/software group. Lusha 18 Jun 2026.',channels:[],created:'2026-06-18'},
+  {id:'l28',fname:'Maxime',lname:'Cohendet',title:'Co-Founder & Group MD',company:'Avizio WEFY Group',email:'maxime@avizio.fr',country:'France',stage:'new',assignee:'',services:['saas'],notes:'Co-founder recruitment SaaS group. Lusha 18 Jun 2026.',channels:[],created:'2026-06-18'},
+  {id:'l29',fname:'Sanjiv',lname:'Cherian',title:'Chief Executive Officer',company:'Microminder Cyber Security',email:'sanjiv.cherian@micromindercs.com',country:'UAE',stage:'new',assignee:'',services:['cyber'],notes:'CEO cybersecurity firm Dubai. Lusha 18 Jun 2026.',channels:[],created:'2026-06-18'},
+  {id:'l30',fname:'Sandrine',lname:'Pomone',title:'Chief Executive Officer',company:'Pomone',email:'shardel@pomone-sas.fr',country:'France',stage:'new',assignee:'',services:['cloud','cyber'],notes:'CEO manufacturing firm. Lusha 18 Jun 2026.',channels:[],created:'2026-06-18'},
+  {id:'l31',fname:'Delaval',lname:'Frederic',title:'Managing Director',company:'SKYTECH SLP',email:'frederic.delaval@skytechslp.com',country:'France',stage:'new',assignee:'',services:['cloud','saas'],notes:'MD tech manufacturing. Lusha 18 Jun 2026.',channels:[],created:'2026-06-18'},
+  {id:'l32',fname:'Chris',lname:'Denbigh White',title:'Global Head of Cyber Security',company:'Elwood',email:'chris.denbigh-white@elwood.io',country:'United Kingdom',stage:'new',assignee:'',services:['cyber'],notes:'Global Head Cyber Security, finance. Lusha 18 Jun 2026.',channels:[],created:'2026-06-18'},
+  {id:'l33',fname:'David',lname:'Paffenholz',title:'CEO & Co-Founder',company:'Juicebox',email:'david@juicebox.work',country:'USA',stage:'new',assignee:'',services:['saas','cloud'],notes:'CEO AI people data SaaS. Lusha 18 Jun 2026.',channels:[],created:'2026-06-18'},
+  {id:'l34',fname:'Kosala',lname:'Indrasiri',title:'Founder & CEO',company:'Sanmark Solutions',email:'kosala@thesanmark.com',country:'Sri Lanka',stage:'new',assignee:'',services:['saas'],notes:'CEO software dev firm. Lusha 18 Jun 2026.',channels:[],created:'2026-06-18'},
+  {id:'l35',fname:'Clayton',lname:'Freire',title:'Director of Technology',company:'Wine',email:'claytonfreire@wine.com.br',country:'Brazil',stage:'new',assignee:'',services:['cloud','saas'],notes:'Director Technology e-commerce. Lusha 18 Jun 2026.',channels:[],created:'2026-06-18'},
+  {id:'l36',fname:'Remi',lname:'Chichery',title:'Director of IT Omnichannel',company:'JACQUEMUS',email:'remi.chichery@jacquemus.com',country:'France',stage:'new',assignee:'',services:['cloud','saas'],notes:'Director IT luxury fashion brand. Lusha 18 Jun 2026.',channels:[],created:'2026-06-18'},
+  {id:'l37',fname:'Jesse',lname:'Zhang',title:'CEO & Co-Founder',company:'Decagon',email:'jesse@decagon.ai',country:'USA',stage:'new',assignee:'',services:['saas','cloud'],notes:'CEO AI customer support SaaS. Lusha 18 Jun 2026.',channels:[],created:'2026-06-18'},
+];
+
+let leads=[], tasks=[], activity=[], team=[];
+let currentDetailId=null;
+
+async function load(){
+  try{leads=JSON.parse(localStorage.getItem(LS.leads))||JSON.parse(JSON.stringify(SEED_LEADS));}catch(e){leads=JSON.parse(JSON.stringify(SEED_LEADS));}
+  try{tasks=JSON.parse(localStorage.getItem(LS.tasks))||[];}catch(e){tasks=[];}
+  try{activity=JSON.parse(localStorage.getItem(LS.activity))||[];}catch(e){activity=[];}
+  try{team=JSON.parse(localStorage.getItem(LS.team))||JSON.parse(JSON.stringify(SEED_TEAM));}catch(e){team=JSON.parse(JSON.stringify(SEED_TEAM));}
+  if(_binId&&_binKey){
+    updateSyncIndicator('loading');
+    const data=await cloudLoad();
+    if(data){
+      leads=data.leads||leads;tasks=data.tasks||tasks;activity=data.activity||activity;team=data.team||team;
+      localStorage.setItem(LS.leads,JSON.stringify(leads));localStorage.setItem(LS.tasks,JSON.stringify(tasks));
+      localStorage.setItem(LS.activity,JSON.stringify(activity));localStorage.setItem(LS.team,JSON.stringify(team));
+      updateSyncIndicator('saved');
+    }else{updateSyncIndicator('error');}
+  }else{updateSyncIndicator('offline');}
+}
+function save(){
+  localStorage.setItem(LS.leads,JSON.stringify(leads));
+  localStorage.setItem(LS.tasks,JSON.stringify(tasks));
+  localStorage.setItem(LS.activity,JSON.stringify(activity));
+  localStorage.setItem(LS.team,JSON.stringify(team));
+  if(_syncTimer)clearTimeout(_syncTimer);
+  _syncTimer=setTimeout(()=>cloudSave(),800);
+}
+
+function initials(l){return((l.fname||'')[0]||'').toUpperCase()+((l.lname||'')[0]||'').toUpperCase();}
+function fullName(l){return(l.fname+' '+l.lname).trim();}
+function nameInitials(n){return n.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();}
+
+function avatarColor(id){
+  const m=team.find(t=>t.id===id||t.name===id);
+  if(m)return m.color;
+  const idx=Math.abs(id.split('').reduce((a,c)=>a+c.charCodeAt(0),0))%COLORS.length;
+  return COLORS[idx];
+}
+
+function svcTags(svcs){
+  return(svcs||[]).map(s=>s==='cyber'?'<span class="tag tag-cyber">Cyber</span>':s==='cloud'?'<span class="tag tag-cloud">Cloud</span>':'<span class="tag tag-saas">SaaS</span>').join('');
+}
+function stagePill(s){
+  const m={new:'sp-new',contacted:'sp-contacted',qualified:'sp-qualified',closed:'sp-closed'};
+  return`<span class="stage-pill ${m[s]||'sp-new'}">${s.charAt(0).toUpperCase()+s.slice(1)}</span>`;
+}
+function channelIcon(ch){
+  const m={linkedin:'<div class="channel-dot ch-li" title="LinkedIn">LI</div>',email:'<div class="channel-dot ch-em" title="Email">EM</div>',phone:'<div class="channel-dot ch-ph" title="Phone">PH</div>',event:'<div class="channel-dot ch-ev" title="Event">EV</div>'};
+  return m[ch]||'';
+}
+function channelLabel(ch){const m={linkedin:'💼 LinkedIn',email:'✉️ Email',phone:'📞 Phone',event:'🤝 In-person'};return m[ch]||ch;}
+
+function updateBadges(){
+  document.getElementById('nb-pipeline').textContent=leads.length;
+  document.getElementById('nb-tasks').textContent=tasks.filter(t=>!t.done).length;
+  document.getElementById('nb-activity').textContent=activity.length;
+  // Team mini avatars
+  const wrap=document.getElementById('team-mini-avatars');
+  wrap.innerHTML=team.slice(0,5).map(m=>`<div class="team-avatar-sm" style="background:${m.color}22;color:${m.color}" title="${m.name}">${nameInitials(m.name)}</div>`).join('');
+}
+
+function showView(v, navEl){
+  document.querySelectorAll('.view').forEach(el=>el.classList.remove('active'));
+  document.getElementById('view-'+v).classList.add('active');
+  if(navEl){document.querySelectorAll('.nav-item').forEach(el=>el.classList.remove('active'));navEl.classList.add('active');}
+  const titles={dashboard:['Dashboard','Welcome back'],pipeline:['Pipeline','Drag leads through your sales stages'],leads:['All leads','Search, filter and manage every contact'],activity:['Activity log','Every touchpoint across all channels'],tasks:['Tasks','Follow-ups and to-dos for the team'],team:['Team members','Manage who has access to the CRM'],detail:['Lead detail','']};
+  const t=titles[v]||['',''];
+  document.getElementById('topbar-title').textContent=t[0];
+  document.getElementById('topbar-sub').textContent=t[1];
+  if(v==='dashboard')renderDashboard();
+  if(v==='pipeline'){renderPipeline();renderMemberFilterChips();}
+  if(v==='leads'){renderTable();populateAssigneeFilter();}
+  if(v==='activity')renderActivity();
+  if(v==='tasks')renderTasks();
+  if(v==='team')renderTeam();
+  updateBadges();
+}
+
+function toast(msg){
+  document.getElementById('toast-msg').textContent=msg;
+  const t=document.getElementById('toast');t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2200);
+}
+
+// ── Dashboard ────────────────────────────────────────────────────────────
+function renderDashboard(){
+  const counts={new:0,contacted:0,qualified:0,closed:0};
+  leads.forEach(l=>counts[l.stage]=(counts[l.stage]||0)+1);
+  document.getElementById('stats').innerHTML=`
+    <div class="stat-card s-teal"><div class="stat-label">Total leads</div><div class="stat-val">${leads.length}</div></div>
+    <div class="stat-card"><div class="stat-label">New</div><div class="stat-val">${counts.new||0}</div></div>
+    <div class="stat-card s-blue"><div class="stat-label">Contacted</div><div class="stat-val">${counts.contacted||0}</div></div>
+    <div class="stat-card s-amber"><div class="stat-label">Qualified</div><div class="stat-val">${counts.qualified||0}</div></div>
+    <div class="stat-card s-green"><div class="stat-label">Closed</div><div class="stat-val">${counts.closed||0}</div></div>
+    <div class="stat-card s-purple"><div class="stat-label">Activities</div><div class="stat-val">${activity.length}</div></div>
+    <div class="stat-card s-red"><div class="stat-label">Open tasks</div><div class="stat-val">${tasks.filter(t=>!t.done).length}</div></div>
+  `;
+  // Recent activity
+  const da=document.getElementById('dash-activity');
+  const recent=[...activity].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,5);
+  da.innerHTML=recent.length?recent.map(a=>{
+    const l=leads.find(x=>x.id===a.leadId);
+    return`<div class="activity-item">
+      <div class="activity-icon" style="background:var(--${a.channel==='linkedin'?'blue':a.channel==='email'?'teal':a.channel==='phone'?'green':'purple'}-bg);color:var(--${a.channel==='linkedin'?'blue':a.channel==='email'?'teal':a.channel==='phone'?'green':'purple'})">${{linkedin:'LI',email:'EM',phone:'PH',event:'EV'}[a.channel]||'?'}</div>
+      <div><div class="activity-meta">${a.date} · ${a.by||'Unknown'} · ${channelLabel(a.channel)}</div>
+      <div class="activity-text">${l?fullName(l)+' ('+l.company+')':'Unknown lead'}</div>
+      ${a.outcome?`<div class="activity-notes">${a.outcome}</div>`:''}
+      </div></div>`;
+  }).join(''):'<div class="empty-state"><div class="empty-icon">📋</div>No activities yet</div>';
+  // Tasks
+  const dt=document.getElementById('dash-tasks');
+  const open=tasks.filter(t=>!t.done).sort((a,b)=>a.due.localeCompare(b.due)).slice(0,5);
+  dt.innerHTML=open.length?open.map(t=>{
+    const l=leads.find(x=>x.id===t.leadId);
+    return`<div class="task-item"><input type="checkbox" class="task-cb" onchange="toggleTask('${t.id}')">
+      <div class="task-text-wrap"><div class="task-text">${t.text}</div>
+      <div class="task-meta">${t.due||'No date'} · ${t.assignee||'Unassigned'}${l?' · '+fullName(l):''}</div></div></div>`;
+  }).join(''):'<div class="empty-state"><div class="empty-icon">✅</div>No open tasks</div>';
+  // Team performance
+  const dt2=document.getElementById('dash-team');
+  dt2.innerHTML=team.map(m=>{
+    const assigned=leads.filter(l=>l.assignee===m.name).length;
+    const acts=activity.filter(a=>a.by===m.name).length;
+    const closed=leads.filter(l=>l.assignee===m.name&&l.stage==='closed').length;
+    return`<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)">
+      <div class="team-avatar-lg" style="background:${m.color}22;color:${m.color}">${nameInitials(m.name)}</div>
+      <div style="flex:1"><div style="font-size:13px;font-weight:600">${m.name}</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:2px">${assigned} leads assigned · ${acts} activities · ${closed} closed</div>
+      </div>
+      <div style="text-align:right;font-size:12px;color:var(--text2)">${assigned?Math.round(closed/assigned*100):0}% close rate</div>
+    </div>`;
+  }).join('');
+}
+
+// ── Pipeline ─────────────────────────────────────────────────────────────
+function renderPipeline(){
+  const stages=[{key:'new',label:'New'},{key:'contacted',label:'Contacted'},{key:'qualified',label:'Qualified'},{key:'closed',label:'Closed'}];
+  const visibleLeads=(_activeMemberFilter&&_activeMemberFilter!=='all')?leads.filter(l=>l.assignee===_activeMemberFilter):leads;
+  document.getElementById('pipeline-board').innerHTML=stages.map(st=>{
+    const col=visibleLeads.filter(l=>l.stage===st.key);
+    const usedChannels=l=>{
+      const acts=activity.filter(a=>a.leadId===l.id);
+      return [...new Set(acts.map(a=>a.channel))];
+    };
+    const cards=col.map(l=>{
+      const assigneeM=team.find(m=>m.name===l.assignee);
+      const chs=usedChannels(l);
+      const negCount=(l.comments||[]).filter(c=>c.sentiment==='negative').length;
+      const totalComments=(l.comments||[]).length;
+      return`<div class="lead-card" onclick="openDetail('${l.id}')">
+        <div class="lc-name">${fullName(l)}</div>
+        <div class="lc-sub">${l.title} · ${l.company}</div>
+        <div class="lc-tags">${svcTags(l.services)}</div>
+        <div class="lc-footer">
+          ${l.assignee?`<div class="lc-assignee"><div style="width:18px;height:18px;border-radius:50%;background:${assigneeM?assigneeM.color+'22':'var(--bg4)'};color:${assigneeM?assigneeM.color:'var(--text3)'};display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:800">${nameInitials(l.assignee)}</div>${l.assignee}</div>`:'<div></div>'}
+          <div style="display:flex;align-items:center;gap:6px">
+            ${totalComments>0?`<span class="comment-count-sm">${negCount>0?'<span class="neg-dot"></span>':''}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="11" height="11"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>${totalComments}</span>`:''}
+            <div class="lc-channels">${chs.map(channelIcon).join('')}</div>
+          </div>
+        </div>
+      </div>`;}).join('');
+    return`<div class="pipe-col pipe-${st.key}">
+      <div class="pipe-hdr"><span class="pipe-label">${st.label}</span><span class="pipe-count">${col.length}</span></div>
+      ${cards||'<div style="font-size:12px;color:var(--text3);padding:8px 4px">No leads here</div>'}
+    </div>`;
+  }).join('');
+}
+
+// ── All Leads Table ───────────────────────────────────────────────────────
+function populateAssigneeFilter(){
+  const sel=document.getElementById('filter-assignee');
+  const names=[...new Set(leads.map(l=>l.assignee).filter(Boolean))];
+  sel.innerHTML='<option value="">All assignees</option>'+names.map(n=>`<option value="${n}">${n}</option>`).join('');
+}
+function renderTable(){
+  const q=(document.getElementById('search-input')||{}).value?.toLowerCase()||'';
+  const stage=(document.getElementById('filter-stage')||{}).value||'';
+  const assignee=(document.getElementById('filter-assignee')||{}).value||'';
+  const svc=(document.getElementById('filter-service')||{}).value||'';
+  const ch=(document.getElementById('filter-channel')||{}).value||'';
+  const filtered=leads.filter(l=>{
+    if(q&&!fullName(l).toLowerCase().includes(q)&&!l.company.toLowerCase().includes(q)&&!(l.email||'').toLowerCase().includes(q))return false;
+    if(stage&&l.stage!==stage)return false;
+    if(assignee&&l.assignee!==assignee)return false;
+    if(svc&&!(l.services||[]).includes(svc))return false;
+    if(ch){const acts=activity.filter(a=>a.leadId===l.id&&a.channel===ch);if(!acts.length)return false;}
+    return true;
+  });
+  document.getElementById('leads-tbody').innerHTML=filtered.map(l=>{
+    const assigneeM=team.find(m=>m.name===l.assignee);
+    const chs=[...new Set(activity.filter(a=>a.leadId===l.id).map(a=>a.channel))];
+    return`<tr>
+      <td><div class="contact-cell"><div class="avatar" style="background:${avatarColor(l.id)}22;color:${avatarColor(l.id)}">${initials(l)}</div>
+      <div><div class="contact-name">${fullName(l)}</div><div class="contact-title-sm">${l.title}</div></div></div></td>
+      <td style="font-size:13px;color:var(--text2)">${l.company}</td>
+      <td>${stagePill(l.stage)}</td>
+      <td>${svcTags(l.services)}</td>
+      <td>${l.assignee?`<div style="display:flex;align-items:center;gap:6px"><div style="width:20px;height:20px;border-radius:50%;background:${assigneeM?assigneeM.color+'22':'var(--bg4)'};color:${assigneeM?assigneeM.color:'var(--text3)'};display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:800">${nameInitials(l.assignee)}</div><span style="font-size:12px;color:var(--text2)">${l.assignee}</span></div>`:'<span style="font-size:12px;color:var(--text3)">—</span>'}</td>
+      <td><div style="display:flex;gap:3px">${chs.length?chs.map(channelIcon).join(''):'<span style="font-size:11px;color:var(--text3)">None yet</span>'}</div></td>
+      <td style="font-size:11px;color:var(--text2)">${l.created||'&mdash;'}</td>
+      <td><button class="btn btn-ghost btn-sm" onclick="openDetail('${l.id}')">View</button></td>
+    </tr>`;
+  }).join('');
+}
+
+// ── Lead Detail ───────────────────────────────────────────────────────────
+function openDetail(id){
+  currentDetailId=id;
+  const l=leads.find(x=>x.id===id);if(!l)return;
+  const assigneeM=team.find(m=>m.name===l.assignee);
+  const leadActs=[...activity.filter(a=>a.leadId===id)].sort((a,b)=>b.date.localeCompare(a.date));
+  const leadTasks=tasks.filter(t=>t.leadId===id);
+  const usedChannels=[...new Set(leadActs.map(a=>a.channel))];
+  document.getElementById('detail-content').innerHTML=`
+    <div class="detail-hdr">
+      <div class="detail-avatar" style="background:${avatarColor(id)}22;color:${avatarColor(id)}">${initials(l)}</div>
+      <div style="flex:1">
+        <div class="detail-name">${fullName(l)}</div>
+        <div class="detail-sub">${l.title} · ${l.company} · ${l.country}</div>
+        <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap">${svcTags(l.services)} ${usedChannels.map(channelIcon).join('')}</div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:flex-start">
+        <button class="btn btn-ghost btn-sm" onclick="openEditLead('${id}')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          Edit
+        </button>
+        <button class="btn btn-danger btn-sm" onclick="deleteLead('${id}')">Delete</button>
+      </div>
+    </div>
+    <div class="detail-grid">
+      <div>
+        <div class="card" style="margin-bottom:14px">
+          <div class="card-header"><span class="card-header-title">Contact details</span></div>
+          <div class="card-body" style="padding:0 18px">
+            <div class="info-row"><span class="info-label">Email</span><a href="mailto:${l.email}" style="color:#1B3FAB;font-size:13px;text-decoration:none">${l.email}</a></div>
+            <div class="info-row"><span class="info-label">Stage</span>
+              <select style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:12px;padding:4px 8px" onchange="updateStage('${id}',this.value)">
+                ${['new','contacted','qualified','closed'].map(s=>`<option value="${s}"${l.stage===s?' selected':''}>${s.charAt(0).toUpperCase()+s.slice(1)}</option>`).join('')}
+              </select>
+            </div>
+            <div class="info-row"><span class="info-label">Assigned to</span>
+              <select style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:12px;padding:4px 8px" onchange="updateAssignee('${id}',this.value)">
+                <option value=""${!l.assignee?' selected':''}>Unassigned</option>
+                ${team.map(m=>`<option value="${m.name}"${l.assignee===m.name?' selected':''}>${m.name}</option>`).join('')}
+              </select>
+            </div>
+            <div class="info-row" style="align-items:flex-start"><span class="info-label">Notes</span><div style="font-size:13px;color:var(--text2);line-height:1.5">${l.notes||'No notes.'}</div></div>
+            <div class="info-row"><span class="info-label">Added</span><span style="font-size:12px;color:var(--text3)">${l.created||'—'}</span></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <span class="card-header-title">Tasks</span>
+            <button class="btn btn-ghost btn-sm" onclick="openAddTask('${id}')">+ Add</button>
+          </div>
+          <div class="card-body" style="padding:12px 16px">
+            ${leadTasks.length?leadTasks.map(t=>`
+              <div class="task-item"><input type="checkbox" class="task-cb" ${t.done?'checked':''} onchange="toggleTask('${t.id}')">
+              <div class="task-text-wrap"><div class="task-text${t.done?' done':''}">${t.text}</div>
+              <div class="task-meta">${t.due||'No date'} · ${t.assignee||'Unassigned'}</div></div></div>`).join(''):
+            '<div class="empty-state">No tasks yet</div>'}
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <div class="card-header">
+            <span class="card-header-title">Activity timeline</span>
+            <button class="btn btn-ghost btn-sm" onclick="openLogActivity('${id}')">+ Log</button>
+          </div>
+          <div class="card-body" style="padding:16px 18px">
+            ${leadActs.length?`<div class="timeline">`+leadActs.map(a=>{
+              const chClass={linkedin:'tl-li',email:'tl-em',phone:'tl-ph',event:'tl-ev'}[a.channel]||'';
+              return`<div class="tl-item ${chClass}">
+                <div class="tl-dot"></div>
+                <div class="activity-item">
+                  <div class="activity-icon" style="background:var(--${a.channel==='linkedin'?'blue':a.channel==='email'?'teal':a.channel==='phone'?'green':'purple'}-bg);color:var(--${a.channel==='linkedin'?'blue':a.channel==='email'?'teal':a.channel==='phone'?'green':'purple'})">${{linkedin:'LI',email:'EM',phone:'PH',event:'EV'}[a.channel]||'?'}</div>
+                  <div>
+                    <div class="activity-meta">${a.date} · ${a.by||'Unknown'} · ${channelLabel(a.channel)}</div>
+                    ${a.outcome?`<div class="activity-text">${a.outcome}</div>`:''}
+                    ${a.notes?`<div class="activity-notes">${a.notes}</div>`:''}
+                  </div>
+                </div>
+              </div>`;
+            }).join('')+`</div>`:
+            '<div class="empty-state"><div class="empty-icon">📬</div>No activities yet<br><span style="font-size:12px">Log the first touchpoint above</span></div>'}
+          </div>
+        </div>
+        <div class="card" style="margin-top:14px">
+          <div class="card-header">
+            <span class="card-header-title">Comments &amp; prospect feedback</span>
+          </div>
+          <div class="card-body" style="padding:0">
+            <div id="detail-comments-list" style="padding:12px 16px;display:flex;flex-direction:column;gap:8px;max-height:320px;overflow-y:auto"></div>
+            <div style="padding:12px 16px;border-top:1px solid var(--border)">
+              <div style="display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap;align-items:center">
+                <span style="font-size:11px;color:var(--text3)">Posting as:</span>
+                <select id="detail-comment-author" style="font-size:12px;padding:4px 8px"></select>
+                <span style="font-size:11px;color:var(--text3);margin-left:4px">Prospect tone:</span>
+                <button class="sent-btn sel-positive" id="dc-sent-pos" onclick="setDetailSent('positive')">Positive</button>
+                <button class="sent-btn" id="dc-sent-neu" onclick="setDetailSent('neutral')">Neutral</button>
+                <button class="sent-btn" id="dc-sent-neg" onclick="setDetailSent('negative')">Negative</button>
+              </div>
+              <div style="display:flex;gap:8px">
+                <textarea class="cp-textarea" id="detail-comment-input" placeholder="Log what the prospect said or how they responded…"></textarea>
+                <button class="btn btn-primary btn-sm" style="align-self:flex-end;white-space:nowrap" onclick="addDetailComment('${id}')">Add note</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        </div>
+      </div>
+    </div>`;
+  showView('detail',null);
+  populateDetailCommentAuthor();
+  renderDetailComments(id);
+}
+
+function updateStage(id,val){const l=leads.find(x=>x.id===id);if(!l)return;l.stage=val;save();toast('Stage updated');renderPipeline();}
+function updateAssignee(id,val){const l=leads.find(x=>x.id===id);if(!l)return;l.assignee=val;save();toast('Assignee updated');}
+function deleteLead(id){if(!confirm('Delete this lead? This cannot be undone.'))return;leads=leads.filter(x=>x.id!==id);save();showView('pipeline',null);toast('Lead deleted');}
+
+// ── Add / Edit Lead ───────────────────────────────────────────────────────
+function populateAssigneeSelects(){
+  ['f-assignee','t-assignee'].forEach(id=>{
+    const sel=document.getElementById(id);if(!sel)return;
+    const cur=sel.value;
+    sel.innerHTML='<option value="">Unassigned</option>'+team.map(m=>`<option value="${m.name}">${m.name}</option>`).join('');
+    sel.value=cur;
+  });
+}
+function openAddLead(){
+  document.getElementById('modal-lead-title').childNodes[1].textContent=' Add new lead';
+  ['f-fname','f-lname','f-title','f-company','f-email','f-country','f-notes'].forEach(i=>document.getElementById(i).value='');
+  document.getElementById('f-stage').value='new';
+  document.getElementById('f-assignee').value='';
+  document.getElementById('f-cyber').checked=false;
+  document.getElementById('f-cloud').checked=false;
+  document.getElementById('f-saas').checked=false;
+  document.getElementById('f-edit-id').value='';
+  populateAssigneeSelects();
+  document.getElementById('modal-lead').classList.add('open');
+}
+function openEditLead(id){
+  const l=leads.find(x=>x.id===id);if(!l)return;
+  document.getElementById('modal-lead-title').childNodes[1].textContent=' Edit lead';
+  document.getElementById('f-fname').value=l.fname||'';
+  document.getElementById('f-lname').value=l.lname||'';
+  document.getElementById('f-title').value=l.title||'';
+  document.getElementById('f-company').value=l.company||'';
+  document.getElementById('f-email').value=l.email||'';
+  document.getElementById('f-country').value=l.country||'';
+  document.getElementById('f-stage').value=l.stage||'new';
+  populateAssigneeSelects();
+  document.getElementById('f-assignee').value=l.assignee||'';
+  document.getElementById('f-cyber').checked=(l.services||[]).includes('cyber');
+  document.getElementById('f-cloud').checked=(l.services||[]).includes('cloud');
+  document.getElementById('f-saas').checked=(l.services||[]).includes('saas');
+  document.getElementById('f-notes').value=l.notes||'';
+  document.getElementById('f-edit-id').value=id;
+  document.getElementById('modal-lead').classList.add('open');
+}
+function saveLead(){
+  const fname=document.getElementById('f-fname').value.trim();
+  const lname=document.getElementById('f-lname').value.trim();
+  if(!fname||!lname){alert('First and last name are required.');return;}
+  const svcs=[];
+  if(document.getElementById('f-cyber').checked)svcs.push('cyber');
+  if(document.getElementById('f-cloud').checked)svcs.push('cloud');
+  if(document.getElementById('f-saas').checked)svcs.push('saas');
+  const editId=document.getElementById('f-edit-id').value;
+  if(editId){
+    const l=leads.find(x=>x.id===editId);
+    Object.assign(l,{fname,lname,title:document.getElementById('f-title').value.trim(),company:document.getElementById('f-company').value.trim(),email:document.getElementById('f-email').value.trim(),country:document.getElementById('f-country').value.trim(),stage:document.getElementById('f-stage').value,assignee:document.getElementById('f-assignee').value,services:svcs,notes:document.getElementById('f-notes').value.trim()});
+    toast('Lead updated');
+  }else{
+    leads.push({id:'l'+Date.now(),fname,lname,title:document.getElementById('f-title').value.trim(),company:document.getElementById('f-company').value.trim(),email:document.getElementById('f-email').value.trim(),country:document.getElementById('f-country').value.trim(),stage:document.getElementById('f-stage').value,assignee:document.getElementById('f-assignee').value,services:svcs,notes:document.getElementById('f-notes').value.trim(),channels:[],created:new Date().toISOString().slice(0,10)});
+    toast('Lead added');
+  }
+  save();closeModal('modal-lead');populateAssigneeFilter();
+  if(editId)openDetail(editId);else showView('leads',null);
+  updateBadges();
+}
+
+// ── Activity ──────────────────────────────────────────────────────────────
+function openLogActivity(leadId){
+  const sel=document.getElementById('a-lead');
+  sel.innerHTML='<option value="">Select a lead…</option>'+leads.map(l=>`<option value="${l.id}"${l.id===leadId?' selected':''}>${fullName(l)} · ${l.company}</option>`).join('');
+  const bySel=document.getElementById('a-by');
+  bySel.innerHTML='<option value="">Select member…</option>'+team.map(m=>`<option value="${m.name}">${m.name}</option>`).join('');
+  document.getElementById('a-notes').value='';
+  document.getElementById('a-date').value=new Date().toISOString().slice(0,10);
+  document.getElementById('modal-activity').classList.add('open');
+}
+function saveActivity(){
+  const leadId=document.getElementById('a-lead').value;
+  if(!leadId){alert('Please select a lead.');return;}
+  const act={id:'a'+Date.now(),leadId,channel:document.getElementById('a-channel').value,date:document.getElementById('a-date').value,by:document.getElementById('a-by').value,outcome:document.getElementById('a-outcome').value,notes:document.getElementById('a-notes').value.trim()};
+  activity.push(act);
+  // Update lead stage if contacted
+  const l=leads.find(x=>x.id===leadId);
+  if(l&&l.stage==='new'){l.stage='contacted';}
+  save();closeModal('modal-activity');toast('Activity logged');
+  renderActivity();renderDashboard();updateBadges();
+  if(currentDetailId===leadId)openDetail(leadId);
+}
+function renderActivity(){
+  const el=document.getElementById('activity-list');if(!el)return;
+  const sorted=[...activity].sort((a,b)=>b.date.localeCompare(a.date));
+  el.innerHTML=sorted.length?sorted.map(a=>{
+    const l=leads.find(x=>x.id===a.leadId);
+    const assigneeM=team.find(m=>m.name===a.by);
+    return`<div class="activity-item">
+      <div class="activity-icon" style="background:var(--${a.channel==='linkedin'?'blue':a.channel==='email'?'teal':a.channel==='phone'?'green':'purple'}-bg);color:var(--${a.channel==='linkedin'?'blue':a.channel==='email'?'teal':a.channel==='phone'?'green':'purple'})">${{linkedin:'LI',email:'EM',phone:'PH',event:'EV'}[a.channel]||'?'}</div>
+      <div style="flex:1">
+        <div class="activity-meta">${a.date} · ${channelLabel(a.channel)}</div>
+        <div class="activity-text" style="font-weight:500">${l?`<span style="cursor:pointer;color:#1B3FAB" onclick="openDetail('${l.id}')">${fullName(l)}</span> · ${l.company}`:'Unknown lead'}</div>
+        ${a.outcome?`<div class="activity-notes">${a.outcome}</div>`:''}
+        ${a.notes?`<div class="activity-notes" style="margin-top:2px">${a.notes}</div>`:''}
+      </div>
+      ${a.by?`<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text3)"><div style="width:20px;height:20px;border-radius:50%;background:${assigneeM?assigneeM.color+'22':'var(--bg4)'};color:${assigneeM?assigneeM.color:'var(--text3)'};display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:800">${nameInitials(a.by)}</div>${a.by}</div>`:''}
+    </div>`;
+  }).join(''):'<div class="empty-state"><div class="empty-icon">📬</div>No activities logged yet.<br>Use "+ Log activity" to track LinkedIn, emails, calls and events.</div>';
+}
+
+// ── Tasks ─────────────────────────────────────────────────────────────────
+function openAddTask(leadId){
+  const sel=document.getElementById('t-lead');
+  sel.innerHTML='<option value="">— no lead —</option>'+leads.map(l=>`<option value="${l.id}"${l.id===leadId?' selected':''}>${fullName(l)} · ${l.company}</option>`).join('');
+  populateAssigneeSelects();
+  document.getElementById('t-text').value='';
+  document.getElementById('t-due').value=new Date().toISOString().slice(0,10);
+  document.getElementById('modal-task').classList.add('open');
+}
+function saveTask(){
+  const text=document.getElementById('t-text').value.trim();
+  if(!text){alert('Please enter a task description.');return;}
+  tasks.push({id:'t'+Date.now(),text,due:document.getElementById('t-due').value,assignee:document.getElementById('t-assignee').value,leadId:document.getElementById('t-lead').value,done:false});
+  save();closeModal('modal-task');toast('Task saved');renderTasks();renderDashboard();updateBadges();
+  if(currentDetailId)openDetail(currentDetailId);
+}
+function toggleTask(id){
+  const t=tasks.find(x=>x.id===id);if(!t)return;
+  t.done=!t.done;save();renderTasks();renderDashboard();updateBadges();
+  if(currentDetailId)openDetail(currentDetailId);
+}
+function renderTasks(){
+  const tl=document.getElementById('tasks-list');if(!tl)return;
+  const open=tasks.filter(t=>!t.done).sort((a,b)=>a.due.localeCompare(b.due));
+  const done=tasks.filter(t=>t.done);
+  const row=t=>{
+    const l=leads.find(x=>x.id===t.leadId);
+    const assigneeM=team.find(m=>m.name===t.assignee);
+    return`<div class="task-item"><input type="checkbox" class="task-cb" ${t.done?'checked':''} onchange="toggleTask('${t.id}')">
+      <div class="task-text-wrap">
+        <div class="task-text${t.done?' done':''}">${t.text}</div>
+        <div class="task-meta">${t.due||'No date'}${t.assignee?` · <span style="color:${assigneeM?assigneeM.color:'var(--text3)'}">${t.assignee}</span>`:''}${l?' · '+fullName(l)+' ('+l.company+')':''}</div>
+      </div></div>`;
+  };
+  tl.innerHTML=(open.length?'<div style="font-size:11px;font-weight:700;color:var(--text3);margin-bottom:8px;text-transform:uppercase;letter-spacing:.07em">Open ('+open.length+')</div>'+open.map(row).join(''):'<div class="empty-state"><div class="empty-icon">✅</div>No open tasks</div>')+
+    (done.length?'<div style="font-size:11px;font-weight:700;color:var(--text3);margin:16px 0 8px;text-transform:uppercase;letter-spacing:.07em">Completed ('+done.length+')</div>'+done.map(row).join(''):'');
+}
+
+// ── Team ──────────────────────────────────────────────────────────────────
+function openAddTeamMember(){document.getElementById('tm-name').value='';document.getElementById('modal-team').classList.add('open');}
+function saveTeamMember(){
+  const name=document.getElementById('tm-name').value.trim();
+  if(!name){alert('Please enter a name.');return;}
+  if(team.find(m=>m.name.toLowerCase()===name.toLowerCase())){alert('A team member with this name already exists.');return;}
+  const color=COLORS[team.length%COLORS.length];
+  team.push({id:'u'+Date.now(),name,color});
+  save();closeModal('modal-team');renderTeam();populateAssigneeSelects();populateAssigneeFilter();updateBadges();toast(name+' added to team');
+}
+function removeTeamMember(id){
+  const m=team.find(x=>x.id===id);if(!m)return;
+  if(team.length<=1){alert('You need at least one team member.');return;}
+  if(!confirm(`Remove ${m.name} from the team?`))return;
+  team=team.filter(x=>x.id!==id);
+  leads.forEach(l=>{if(l.assignee===m.name)l.assignee='';});
+  save();renderTeam();populateAssigneeSelects();populateAssigneeFilter();toast(m.name+' removed');
+}
+function renderTeam(){
+  const tl=document.getElementById('team-list');if(!tl)return;
+  tl.innerHTML=team.map(m=>{
+    const assigned=leads.filter(l=>l.assignee===m.name).length;
+    const acts=activity.filter(a=>a.by===m.name).length;
+    return`<div class="team-card">
+      <div class="team-avatar-lg" style="background:${m.color}22;color:${m.color}">${nameInitials(m.name)}</div>
+      <div class="team-info">
+        <div class="team-name">${m.name}</div>
+        <div class="team-stats">${assigned} leads assigned · ${acts} activities logged</div>
+      </div>
+      <button class="btn btn-danger btn-sm" onclick="removeTeamMember('${m.id}')">Remove</button>
+    </div>`;
+  }).join('');
+}
+
+// ── Export ────────────────────────────────────────────────────────────────
+function parseCSVRow(row){
+  const result=[];let current='',inQuotes=false;
+  for(let i=0;i<row.length;i++){
+    const ch=row[i];
+    if(ch==='"'){if(inQuotes&&row[i+1]==='"'){current+='"';i++;}else inQuotes=!inQuotes;}
+    else if(ch===','&&!inQuotes){result.push(current);current='';}
+    else{current+=ch;}
+  }
+  result.push(current);return result;
+}
+function handleCSVUpload(event){
+  const _f=event.target.files[0];if(!_f)return;
+  const _ext=_f.name.split('.').pop().toLowerCase();
+  if(_ext==='xlsx'||_ext==='xls'){handleXLSXUpload(_f,event);return;}
+  const file=_f;
+  const reader=new FileReader();
+  reader.onload=function(e){
+    const lines=e.target.result.split('\n').map(l=>l.trim()).filter(Boolean);
+    if(lines.length<2){alert('CSV appears empty.');return;}
+    const rawHeaders=parseCSVRow(lines[0]).map(h=>h.toLowerCase().replace(/"/g,'').trim());
+    const col=(...keys)=>rawHeaders.findIndex(h=>keys.some(k=>h.includes(k)));
+    const idx={fname:col('first'),lname:col('last'),name:col('name','contact'),title:col('title','job','position'),company:col('company','organ'),email:col('email'),country:col('country'),services:col('service'),notes:col('note','why')};
+    let added=0,dupes=0,skipped=0;
+    const dupeNames=[],addedNames=[];
+    const today=new Date().toISOString().slice(0,10);
+    for(let i=1;i<lines.length;i++){
+      const cols=parseCSVRow(lines[i]);if(!cols.length)continue;
+      let fname='',lname='';
+      if(idx.fname>=0&&idx.lname>=0){fname=(cols[idx.fname]||'').replace(/"/g,'').trim();lname=(cols[idx.lname]||'').replace(/"/g,'').trim();}
+      else if(idx.name>=0){const p=(cols[idx.name]||'').replace(/"/g,'').trim().split(' ');fname=p[0]||'';lname=p.slice(1).join(' ');}
+      if(!fname&&!lname){skipped++;continue;}
+      const email=(idx.email>=0?(cols[idx.email]||''):'').replace(/"/g,'').trim().toLowerCase();
+      const company=(idx.company>=0?(cols[idx.company]||''):'').replace(/"/g,'').trim();
+      const isDupe=leads.some(l=>{
+        if(email&&l.email&&l.email.toLowerCase()===email)return true;
+        if(fullName(l).toLowerCase()===(fname+' '+lname).toLowerCase()&&l.company.toLowerCase()===company.toLowerCase())return true;
+        return false;
+      });
+      if(isDupe){dupes++;dupeNames.push(fname+' '+lname+(company?' ('+company+')':''));continue;}
+      const svcRaw=(idx.services>=0?(cols[idx.services]||''):'').toLowerCase();
+      const svcs=[];
+      if(svcRaw.includes('cyber'))svcs.push('cyber');
+      if(svcRaw.includes('cloud')||svcRaw.includes('it '))svcs.push('cloud');
+      if(svcRaw.includes('saas')||svcRaw.includes('software'))svcs.push('saas');
+      leads.push({id:'l'+Date.now()+'x'+i,fname,lname,
+        title:(idx.title>=0?(cols[idx.title]||''):'').replace(/"/g,'').trim(),
+        company,email:(idx.email>=0?(cols[idx.email]||''):'').replace(/"/g,'').trim(),
+        country:(idx.country>=0?(cols[idx.country]||''):'').replace(/"/g,'').trim(),
+        stage:'new',assignee:'',services:svcs,
+        notes:(idx.notes>=0?(cols[idx.notes]||''):'').replace(/"/g,'').trim(),
+        channels:[],created:today});
+      added++;addedNames.push(fname+' '+lname+(company?' ('+company+')':''));
+    }
+    save();
+    let html='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px">'
+      +'<div style="background:#EAFAF1;border-radius:8px;padding:12px;text-align:center"><div style="font-size:22px;font-weight:700;color:#16A34A">'+added+'</div><div style="font-size:12px;color:#4A5568">Leads added</div></div>'
+      +'<div style="background:#FEF5EC;border-radius:8px;padding:12px;text-align:center"><div style="font-size:22px;font-weight:700;color:#E8650A">'+dupes+'</div><div style="font-size:12px;color:#4A5568">Duplicates removed</div></div>'
+      +'<div style="background:#F4F6F9;border-radius:8px;padding:12px;text-align:center"><div style="font-size:22px;font-weight:700;color:#4A5568">'+skipped+'</div><div style="font-size:12px;color:#4A5568">Rows skipped</div></div></div>';
+    if(addedNames.length)html+='<div style="margin-bottom:12px"><div style="font-size:12px;font-weight:600;color:#16A34A;margin-bottom:6px">Added ('+addedNames.length+')</div>'+addedNames.map(n=>'<div style="font-size:12px;padding:4px 0;border-bottom:1px solid #E2E6EE">'+n+'</div>').join('')+'</div>';
+    if(dupeNames.length)html+='<div><div style="font-size:12px;font-weight:600;color:#E8650A;margin-bottom:6px">Duplicates skipped ('+dupeNames.length+')</div>'+dupeNames.map(n=>'<div style="font-size:12px;padding:4px 0;border-bottom:1px solid #E2E6EE">'+n+'</div>').join('')+'</div>';
+    document.getElementById('upload-results').innerHTML=html;
+    document.getElementById('csv-upload').value='';
+    document.getElementById('modal-upload').classList.add('open');
+  };
+  reader.readAsText(file);
+}
+function exportCSV(){
+  const headers=['Name','Title','Company','Email','Country','Stage','Assigned To','Services','Channels Used','Notes','Added'];
+  const rows=leads.map(l=>{
+    const chs=[...new Set(activity.filter(a=>a.leadId===l.id).map(a=>a.channel))].map(channelLabel).join('; ');
+    return[fullName(l),l.title,l.company,l.email,l.country,l.stage,l.assignee||'',(l.services||[]).join('; '),chs,l.notes||'',l.created||''];
+  });
+  const csv=[headers,...rows].map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\n');
+  const a=document.createElement('a');
+  a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
+  a.download='TekXera_Leads_'+new Date().toISOString().slice(0,10)+'.csv';
+  a.click();toast('CSV downloaded');
+}
+
+// ── Pipeline View Toggle ──────────────────────────────────────────────────
+let _currentPipelineView='all';
+let _activeMemberFilter='all';
+let _openCommentLeadId=null;
+let _detailCommentSentiment='positive';
+
+function setPipelineView(v){
+  _currentPipelineView=v;
+  document.getElementById('pvt-all').className='pvt-btn'+(v==='all'?' active':'');
+  document.getElementById('pvt-team').className='pvt-btn'+(v==='team'?' active':'');
+  document.getElementById('pipeline-board-all').style.display=v==='all'?'':'none';
+  document.getElementById('pipeline-board-team').style.display=v==='team'?'':'none';
+  renderMemberFilterChips();
+  if(v==='all')renderPipeline();else renderTeamPipeline();
+}
+function renderMemberFilterChips(){
+  const wrap=document.getElementById('member-filter-chips');if(!wrap)return;
+  let h=`<button class="mf-chip${_activeMemberFilter==='all'?' active':''}" style="${_activeMemberFilter==='all'?'background:#1B3FAB;border-color:#1B3FAB':''}" onclick="setMemberFilter('all')">All team</button>`;
+  team.forEach(m=>{
+    const active=_activeMemberFilter===m.name;
+    h+=`<button class="mf-chip${active?' active':''}" style="${active?'background:'+m.color+';border-color:'+m.color:''}" onclick="setMemberFilter('${m.name}')">${m.name.split(' ')[0]}</button>`;
+  });
+  wrap.innerHTML=h;
+}
+function setMemberFilter(name){
+  _activeMemberFilter=name;
+  renderMemberFilterChips();
+  if(_currentPipelineView==='all')renderPipeline();else renderTeamPipeline();
+}
+function renderTeamPipeline(){
+  const showMembers=activeMemberFilter==='all'?team:team.filter(m=>m.id===activeMemberFilter);
+  const board=document.getElementById('pipeline-board-team');
+  let html='<div class="team-pipeline">';
+  showMembers.forEach(m=>{
+    const memberLeads=leads.filter(l=>l.assignee===m.name);
+    html+=`<div class="tp-col">
+      <div class="tp-col-hdr">
+        <div class="tp-member-avatar" style="background:${m.color}22;color:${m.color}">${nameInitials(m.name)}</div>
+        <div>
+          <div class="tp-member-name">${m.name}</div>
+          <div class="tp-member-role">${memberLeads.length} lead${memberLeads.length!==1?'s':''}</div>
+        </div>
+      </div>
+      <div class="tp-cards">`;
+    if(!memberLeads.length){html+='<div style="font-size:11px;color:var(--text3);padding:8px 4px;text-align:center">No leads assigned</div>';}
+    memberLeads.forEach(l=>{
+      const negCount=(l.comments||[]).filter(c=>c.sentiment==='negative').length;
+      const totalComments=(l.comments||[]).length;
+      const isOpen=openCommentLeadId===l.id;
+      html+=`<div class="tp-card${isOpen?' lead-card':''}" style="${isOpen?'border-color:#1B3FAB;':''}" onclick="openPipelineComments('${l.id}')">
+        <div class="tp-card-name">${fullName(l)}</div>
+        <div class="tp-card-sub">${l.company}</div>
+        <div class="tp-card-footer">
+          <span class="stage-pill ${{'new':'sp-new','contacted':'sp-contacted','qualified':'sp-qualified','closed':'sp-closed'}[l.stage]||'sp-new'}">${l.stage.charAt(0).toUpperCase()+l.stage.slice(1)}</span>
+          <span class="comment-count-sm">${negCount>0?'<span class="neg-dot"></span>':''}
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="11" height="11"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            ${totalComments}
+          </span>
+        </div>
+      </div>`;
+    });
+    html+='</div></div>';
+  });
+  html+='</div>';
+  board.innerHTML=html;
+  renderCommentsPanel();
+}
+
+// ── Comments Panel (Team Pipeline) ────────────────────────────────────────
+let pipelineCommentSentiment='positive';
+
+function openPipelineComments(id){
+  openCommentLeadId=openCommentLeadId===id?null:id;
+  renderTeamPipeline();
+}
+function renderCommentsPanel(){
+  const container=document.getElementById('comments-panel-container');
+  if(!openCommentLeadId){container.innerHTML='';return;}
+  const l=leads.find(x=>x.id===openCommentLeadId);
+  if(!l){container.innerHTML='';return;}
+  const comments=l.comments||[];
+  let commentsHtml='';
+  if(!comments.length){
+    commentsHtml='<div class="cp-empty">No interaction notes yet. Add the first one below.</div>';
+  } else {
+    commentsHtml=comments.map(c=>{
+      const roleClass=c.role==='BDE'?'cp-role-bde':'cp-role-am';
+      return`<div class="cp-comment">
+        <div class="cp-comment-meta">
+          <span class="cp-author">${c.author}</span>
+          <span class="cp-role-badge ${roleClass}">${c.role}</span>
+          <span class="cp-time">${c.time}</span>
+        </div>
+        <div class="cp-text">${c.text}</div>
+        <span class="cp-sentiment sent-${c.sentiment}">${c.sentiment.charAt(0).toUpperCase()+c.sentiment.slice(1)} prospect tone</span>
+      </div>`;
+    }).join('');
+  }
+  const teamOptions=team.map(m=>`<option value="${m.name}">${m.name}</option>`).join('');
+  container.innerHTML=`<div class="comments-panel">
+    <div class="cp-header">
+      <span class="cp-title">Interaction log — ${fullName(l)}, ${l.company}</span>
+      <button class="cp-close" onclick="openCommentLeadId=null;renderTeamPipeline()">✕</button>
+    </div>
+    <div class="cp-body" id="cp-body-list">${commentsHtml}</div>
+    <div class="cp-add-form">
+      <div class="cp-form-row" style="align-items:center;gap:10px;flex-wrap:wrap">
+        <span style="font-size:11px;color:var(--text3)">Posting as:</span>
+        <select id="cp-author-sel" style="font-size:12px;padding:4px 8px">${teamOptions}</select>
+        <div class="cp-sent-btns">
+          <span class="cp-sent-label">Prospect tone:</span>
+          <button class="sent-btn sel-positive" id="cp-sent-pos" onclick="setPipeSent('positive')">Positive</button>
+          <button class="sent-btn" id="cp-sent-neu" onclick="setPipeSent('neutral')">Neutral</button>
+          <button class="sent-btn" id="cp-sent-neg" onclick="setPipeSent('negative')">Negative</button>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <textarea class="cp-textarea" id="cp-comment-input" placeholder="Log what the prospect said, their objection, or how they responded…"></textarea>
+        <button class="btn btn-primary btn-sm" style="align-self:flex-end;white-space:nowrap" onclick="addPipelineComment('${l.id}')">Add note</button>
+      </div>
+    </div>
+  </div>`;
+}
+function setPipeSent(s){
+  pipelineCommentSentiment=s;
+  ['positive','neutral','negative'].forEach(x=>{
+    const btn=document.getElementById('cp-sent-'+x.slice(0,3));
+    if(btn)btn.className='sent-btn'+(s===x?' sel-'+x:'');
+  });
+}
+function addPipelineComment(id){
+  const text=(document.getElementById('cp-comment-input')||{}).value?.trim();
+  if(!text)return;
+  const author=(document.getElementById('cp-author-sel')||{}).value||team[0]?.name||'Team';
+  const roleGuess=author.toLowerCase().includes('acqui')?'BDE':'BDE';
+  const l=leads.find(x=>x.id===id);if(!l)return;
+  if(!l.comments)l.comments=[];
+  const now=new Date();
+  const timeStr=now.toLocaleDateString('en-GB',{day:'numeric',month:'short'})+' '+now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+  l.comments.push({author,role:roleGuess,time:timeStr,text,sentiment:pipelineCommentSentiment});
+  save();
+  toast('Note added');
+  renderTeamPipeline();
+}
+
+// ── Comments in Lead Detail ───────────────────────────────────────────────
+function setDetailSent(s){
+  detailCommentSentiment=s;
+  ['positive','neutral','negative'].forEach(x=>{
+    const btn=document.getElementById('dc-sent-'+x.slice(0,3));
+    if(btn)btn.className='sent-btn'+(s===x?' sel-'+x:'');
+  });
+}
+function populateDetailCommentAuthor(){
+  const sel=document.getElementById('detail-comment-author');
+  if(!sel)return;
+  sel.innerHTML=team.map(m=>`<option value="${m.name}">${m.name}</option>`).join('');
+}
+function renderDetailComments(id){
+  const container=document.getElementById('detail-comments-list');
+  if(!container)return;
+  const l=leads.find(x=>x.id===id);
+  if(!l){container.innerHTML='';return;}
+  const comments=l.comments||[];
+  if(!comments.length){container.innerHTML='<div class="cp-empty">No notes yet. Add the first one below.</div>';return;}
+  container.innerHTML=comments.map(c=>{
+    const roleClass=c.role==='BDE'?'cp-role-bde':'cp-role-am';
+    return`<div class="cp-comment">
+      <div class="cp-comment-meta">
+        <span class="cp-author">${c.author}</span>
+        <span class="cp-role-badge ${roleClass}">${c.role}</span>
+        <span class="cp-time">${c.time}</span>
+      </div>
+      <div class="cp-text">${c.text}</div>
+      <span class="cp-sentiment sent-${c.sentiment}">${c.sentiment.charAt(0).toUpperCase()+c.sentiment.slice(1)} prospect tone</span>
+    </div>`;
+  }).join('');
+}
+function addDetailComment(id){
+  const text=(document.getElementById('detail-comment-input')||{}).value?.trim();
+  if(!text)return;
+  const author=(document.getElementById('detail-comment-author')||{}).value||team[0]?.name||'Team';
+  const l=leads.find(x=>x.id===id);if(!l)return;
+  if(!l.comments)l.comments=[];
+  const now=new Date();
+  const timeStr=now.toLocaleDateString('en-GB',{day:'numeric',month:'short'})+' '+now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+  l.comments.push({author,role:'BDE',time:timeStr,text,sentiment:detailCommentSentiment});
+  save();
+  document.getElementById('detail-comment-input').value='';
+  renderDetailComments(id);
+  toast('Note added');
+}
+
+
+// ── XLSX Upload ───────────────────────────────────────────────────────────
+function handleXLSXUpload(file,origEvent){
+  const reader=new FileReader();
+  reader.onload=function(evt){
+    if(typeof XLSX==='undefined'){toast('XLSX library not loaded yet, try again.');return;}
+    try{
+      const wb=XLSX.read(new Uint8Array(evt.target.result),{type:'array'});
+      const ws=wb.Sheets[wb.SheetNames[0]];
+      const rows=XLSX.utils.sheet_to_json(ws,{defval:''});
+      processImportRows(rows,origEvent);
+    }catch(err){toast('Could not parse file.');console.error(err);}
+  };
+  reader.readAsArrayBuffer(file);
+}
+function processImportRows(rows,origEvent){
+  let added=0,dupes=0,skipped=0;
+  const addedNames=[],dupeNames=[],today=new Date().toISOString().slice(0,10);
+  rows.forEach((row,i)=>{
+    const r={};Object.keys(row).forEach(k=>r[k.toLowerCase().trim()]=String(row[k]||'').trim());
+    let fname=r['first name']||r['firstname']||r['fname']||'';
+    let lname=r['last name']||r['lastname']||r['lname']||'';
+    if(!fname&&!lname){const n=(r['name']||r['full name']||'').trim();if(n){const p=n.split(' ');fname=p[0];lname=p.slice(1).join(' ');}}
+    if(!fname&&!lname){skipped++;return;}
+    const email=(r['email']||r['email address']||'').toLowerCase();
+    const company=r['company']||r['company name']||r['organisation']||'';
+    const isDupe=leads.some(l=>{
+      if(email&&l.email&&l.email.toLowerCase()===email)return true;
+      if(fullName(l).toLowerCase()===(fname+' '+lname).toLowerCase()&&l.company.toLowerCase()===company.toLowerCase())return true;
+      return false;
+    });
+    if(isDupe){dupes++;dupeNames.push(fname+' '+lname+(company?' ('+company+')':''));return;}
+    const svcRaw=(r['services']||r['service']||'').toLowerCase();
+    const svcs=[];
+    if(svcRaw.includes('cyber'))svcs.push('cyber');
+    if(svcRaw.includes('cloud')||svcRaw.includes('it '))svcs.push('cloud');
+    if(svcRaw.includes('saas')||svcRaw.includes('software'))svcs.push('saas');
+    leads.push({id:'l'+Date.now()+'x'+i,fname,lname,title:r['title']||r['job title']||r['position']||'',company,email,country:r['country']||r['location']||'',stage:'new',assignee:'',services:svcs,notes:r['notes']||r['note']||'',channels:[],created:today});
+    added++;addedNames.push(fname+' '+lname+(company?' ('+company+')':''));
+  });
+  save();
+  let html='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px">'
+    +'<div style="background:#EAFAF1;border-radius:8px;padding:12px;text-align:center"><div style="font-size:22px;font-weight:700;color:#16A34A">'+added+'</div><div style="font-size:12px">Leads added</div></div>'
+    +'<div style="background:#FEF5EC;border-radius:8px;padding:12px;text-align:center"><div style="font-size:22px;font-weight:700;color:#E8650A">'+dupes+'</div><div style="font-size:12px">Duplicates skipped</div></div>'
+    +'<div style="background:#F4F6F9;border-radius:8px;padding:12px;text-align:center"><div style="font-size:22px;font-weight:700;color:#4A5568">'+skipped+'</div><div style="font-size:12px">Rows skipped</div></div></div>';
+  if(addedNames.length)html+='<div style="margin-bottom:12px"><div style="font-size:12px;font-weight:600;color:#16A34A;margin-bottom:6px">Added ('+addedNames.length+')</div>'+addedNames.map(n=>'<div style="font-size:12px;padding:4px 0;border-bottom:1px solid #E2E6EE">'+n+'</div>').join('')+'</div>';
+  if(dupeNames.length)html+='<div><div style="font-size:12px;font-weight:600;color:#E8650A;margin-bottom:6px">Duplicates skipped ('+dupeNames.length+')</div>'+dupeNames.map(n=>'<div style="font-size:12px;padding:4px 0;border-bottom:1px solid #E2E6EE">'+n+'</div>').join('')+'</div>';
+  document.getElementById('upload-results').innerHTML=html;
+  if(origEvent)origEvent.target.value='';
+  document.getElementById('modal-upload').classList.add('open');
+}
+
+// ── Utils ─────────────────────────────────────────────────────────────────
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.modal-overlay').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open');}));
+document.getElementById('footer-date').textContent=new Date().toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
+
+load().then(()=>{
+  updateBadges();
+  renderDashboard();
+  populateAssigneeSelects();
+  renderMemberFilterChips();
+});
+</script>
+<div class="modal-overlay" id="modal-upload">
+  <div class="modal">
+    <h2>Upload results</h2>
+    <div id="upload-results"></div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" onclick="closeModal('modal-upload');renderTable();renderPipeline();renderDashboard();updateBadges()">Done</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-sync">
+  <div class="modal">
+    <h2>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/></svg>
+      Set up shared team sync
+    </h2>
+    <p style="font-size:12px;color:var(--text2);margin-bottom:16px;line-height:1.6">
+      Uses <strong>JSONBin.io</strong> (free) as a shared database — all team members see the same data in real time.<br><br>
+      <strong>Step 1:</strong> Go to <a href="https://jsonbin.io" target="_blank" style="color:#1B3FAB">jsonbin.io</a> → sign up free → copy your <em>Master Key</em>.<br>
+      <strong>First person:</strong> Paste the key and click Save — a Bin ID is created. Share it with the team.<br>
+      <strong>Other team members:</strong> Paste the key AND the Bin ID you were given.
+    </p>
+    <div class="form-row full" style="margin-bottom:12px">
+      <div class="form-group"><label>JSONBin Master Key</label><input type="password" id="sync-master-key" placeholder="$2a$10$…" style="width:100%"></div>
+    </div>
+    <div class="form-row full" style="margin-bottom:16px">
+      <div class="form-group"><label>Bin ID — leave blank to create a new shared bin</label><input type="text" id="sync-bin-id-input" placeholder="e.g. 686abc123def456…" style="width:100%"></div>
+    </div>
+    <div id="sync-bin-display-row" style="display:none;background:var(--green-bg);border:1px solid var(--green);border-radius:var(--radius);padding:10px 14px;margin-bottom:16px;font-size:12px;color:var(--green)">
+      <strong>Your Bin ID — share this with team members:</strong><br>
+      <span id="sync-bin-display" style="font-family:monospace;font-size:13px;word-break:break-all"></span>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-sync')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveSyncSettings()">Save &amp; sync</button>
+    </div>
+  </div>
+</div>
+</body>
+</html>
