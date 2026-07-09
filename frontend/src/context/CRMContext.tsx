@@ -7,7 +7,7 @@ import type { TeamMember } from '../types/TeamMember';
 import { SEED_TEAM } from '../constants/seedData';
 import * as jsonbin from '../services/jsonbin';
 import { getLeads, subscribeToLeads } from '../services/leadsService';
-import { getTeam, createTeamMember, subscribeToTeam } from '../services/teamService';
+import { getTeam, createTeamMember, deleteTeamMember, subscribeToTeam } from '../services/teamService';
 
 interface CRMContextType {
   leads: Lead[];
@@ -174,6 +174,12 @@ export const CRMProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         newMembers.forEach((m) => {
           createTeamMember(m);
         });
+        // Sync deleted member to Supabase
+        const nextIds = new Set(updates.team.map((m) => m.id));
+        const deletedMembers = team.filter((m) => !nextIds.has(m.id));
+        deletedMembers.forEach((m) => {
+          deleteTeamMember(m.id);
+        });
         nextTeam = updates.team;
       }
     } else {
@@ -213,10 +219,6 @@ export const CRMProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       if (data.activity) {
         setActivity(data.activity);
         localStorage.setItem(LS.activity, JSON.stringify(data.activity));
-      }
-      if (data.team) {
-        setTeam(data.team);
-        localStorage.setItem(LS.team, JSON.stringify(data.team));
       }
       setSyncState('saved');
       return true;

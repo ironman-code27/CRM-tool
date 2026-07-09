@@ -76,6 +76,23 @@ export async function createTeamMember(member: Partial<TeamMember>): Promise<Ser
   }
 }
 
+export async function deleteTeamMember(id: string): Promise<ServiceResult> {
+  try {
+    const { error } = await supabase
+      .from(TEAM_TABLE)
+      .delete()
+      .eq('id', id);
+
+    if (error) throw error;
+    return { success: true };
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    console.error('[teamService] deleteTeamMember exception:', message);
+    return { success: false, error: message };
+  }
+}
+
+
 // ─── Realtime Subscription ──────────────────────────────────────────────────
 
 export type TeamChangeCallback = (team: TeamMember[]) => void;
