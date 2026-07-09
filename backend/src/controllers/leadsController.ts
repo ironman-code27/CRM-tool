@@ -156,6 +156,7 @@ export async function createLead(req: Request, res: Response) {
     const { error } = await supabase.from(LEADS_TABLE).insert(leadToRow(lead));
     if (error) throw error;
     res.json({ success: true });
+    broadcastLeads();
   } catch (err: any) {
     res.status(500).json({ success: false, error: err.message });
   }
@@ -172,6 +173,7 @@ export async function updateLead(req: Request, res: Response) {
       if (error) throw error;
     }
     res.json({ success: true });
+    broadcastLeads();
   } catch (err: any) {
     res.status(500).json({ success: false, error: err.message });
   }
@@ -184,6 +186,7 @@ export async function deleteLead(req: Request, res: Response) {
     const { error } = await supabase.from(LEADS_TABLE).delete().eq('id', uuid);
     if (error) throw error;
     res.json({ success: true });
+    broadcastLeads();
   } catch (err: any) {
     res.status(500).json({ success: false, error: err.message });
   }
@@ -199,6 +202,7 @@ export async function bulkInsertLeads(req: Request, res: Response) {
       if (error) throw error;
     }
     res.json({ success: true });
+    broadcastLeads();
   } catch (err: any) {
     res.status(500).json({ success: false, error: err.message });
   }
