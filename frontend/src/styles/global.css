@@ -204,7 +204,7 @@ input[type=checkbox]{width:14px;height:14px;accent-color:#E8650A;cursor:pointer}
 .team-stats{font-size:11px;color:var(--text3);margin-top:2px}
 
 /* Toast */
-.toast{position:fixed;bottom:24px;right:24px;background:#1B3FAB;color:#fff;border:1px solid #1535A0;color:var(--text);padding:10px 18px;border-radius:var(--radius);font-size:13px;z-index:200;opacity:0;transition:opacity .3s;pointer-events:none;display:flex;align-items:center;gap:8px}
+.toast{position:fixed;bottom:24px;right:24px;background:#1B3FAB;color:#fff;border:1px solid #1535A0;padding:10px 18px;border-radius:var(--radius);font-size:13px;z-index:200;opacity:0;transition:opacity .3s;pointer-events:none;display:flex;align-items:center;gap:8px}
 .toast.show{opacity:1}
 .toast-dot{width:6px;height:6px;border-radius:50%;background:#E8650A;flex-shrink:0}
 
