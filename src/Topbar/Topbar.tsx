@@ -181,6 +181,7 @@ export const Topbar: React.FC = () => {
             border: '1px solid var(--border)',
             whiteSpace: 'nowrap',
             color: syncPresentation[1],
+            display: syncState === 'offline' ? 'none' : 'inline-block',
           }}
           onClick={() => setActiveModal('sync')}
           title="Set up shared team sync"
