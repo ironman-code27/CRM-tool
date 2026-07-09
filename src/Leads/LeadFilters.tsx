@@ -91,12 +91,13 @@ export const LeadFilters: React.FC<LeadFiltersProps> = ({
       >
         <option value="newest">Newest First</option>
         <option value="oldest">Oldest First</option>
-        <option value="company-az">Company Name (A–Z)</option>
-        <option value="company-za">Company Name (Z–A)</option>
+        <option value="name-az">Lead Name (A–Z)</option>
+        <option value="name-za">Lead Name (Z–A)</option>
         <option value="status">Status</option>
         <option value="priority">Priority</option>
         <option value="followup-nearest">Follow-up Date (Nearest First)</option>
         <option value="followup-latest">Follow-up Date (Latest First)</option>
+        <option value="last-contacted">Last Contacted</option>
       </select>
     </div>
   );

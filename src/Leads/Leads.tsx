@@ -75,6 +75,14 @@ export const Leads: React.FC = () => {
       return Math.min(...dates);
     };
 
+    const getLastContactedDate = (leadId: string) => {
+      const leadActs = activity.filter((a) => a.leadId === leadId && a.date);
+      if (leadActs.length === 0) return null;
+      const dates = leadActs.map((a) => new Date(a.date).getTime()).filter((time) => !isNaN(time));
+      if (dates.length === 0) return null;
+      return Math.max(...dates);
+    };
+
     const stageWeights = {
       qualified: 3,
       contacted: 2,
@@ -86,10 +94,10 @@ export const Leads: React.FC = () => {
       switch (sortBy) {
         case 'oldest':
           return (a.created || '').localeCompare(b.created || '');
-        case 'company-az':
-          return (a.company || '').localeCompare(b.company || '');
-        case 'company-za':
-          return (b.company || '').localeCompare(a.company || '');
+        case 'name-az':
+          return fullName(a).localeCompare(fullName(b));
+        case 'name-za':
+          return fullName(b).localeCompare(fullName(a));
         case 'status':
           return (a.stage || '').localeCompare(b.stage || '');
         case 'priority': {
@@ -113,6 +121,14 @@ export const Leads: React.FC = () => {
           if (dateB !== null) return 1;
           return 0;
         }
+        case 'last-contacted': {
+          const dateA = getLastContactedDate(a.id);
+          const dateB = getLastContactedDate(b.id);
+          if (dateA !== null && dateB !== null) return dateB - dateA;
+          if (dateA !== null) return -1;
+          if (dateB !== null) return 1;
+          return 0;
+        }
         case 'newest':
         default:
           return (b.created || '').localeCompare(a.created || '');
@@ -120,7 +136,7 @@ export const Leads: React.FC = () => {
     });
 
     return list;
-  }, [filteredLeads, sortBy, tasks]);
+  }, [filteredLeads, sortBy, tasks, activity]);
 
   const handleViewDetail = (id: string) => {
     setCurrentDetailId(id);
