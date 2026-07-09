@@ -6,7 +6,6 @@ import type { Activity } from '../types/Activity';
 import type { TeamMember } from '../types/TeamMember';
 import { SEED_TEAM, SEED_LEADS } from '../constants/seedData';
 import * as jsonbin from '../services/jsonbin';
-import { verifyConnection } from '../services/supabase';
 import { getLeads, subscribeToLeads } from '../services/leadsService';
 
 interface CRMContextType {
@@ -248,9 +247,8 @@ export const CRMProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     }
   }, [binId, binKey]);
 
-  // Verify Supabase connection, load initial leads, and subscribe to realtime changes on startup
+  // Load initial leads, and subscribe to realtime changes on startup
   useEffect(() => {
-    verifyConnection();
 
     // 1. Initial fetch from Supabase
     getLeads().then((res) => {
