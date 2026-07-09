@@ -36,8 +36,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 
 /* Layout */
 .app{display:flex;height:100vh;overflow:hidden}
-.sidebar{width:230px;background:#1B3FAB;border-right:1px solid #1535A0;display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto}
-.logo-wrap{padding:20px 18px 16px;border-bottom:1px solid var(--border)}
+.sidebar{width:230px;background:#27057C;border-right:1px solid #1c035c;display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto}
+.logo-wrap{padding:20px 18px 16px;border-bottom:1px solid rgba(255,255,255,0.12)}
 .logo-mark{display:flex;align-items:center;gap:10px;margin-bottom:4px}
 .logo-icon{width:32px;height:32px;background:rgba(255,255,255,0.2);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;color:#fff;flex-shrink:0}
 .logo-text{font-size:16px;font-weight:700;letter-spacing:-.3px;color:#fff}
