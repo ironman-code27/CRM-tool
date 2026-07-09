@@ -7,6 +7,7 @@ import type { TeamMember } from '../types/TeamMember';
 import { SEED_TEAM } from '../constants/seedData';
 import * as jsonbin from '../services/jsonbin';
 import { getLeads, subscribeToLeads } from '../services/leadsService';
+import { getTeam, createTeamMember, subscribeToTeam } from '../services/teamService';
 
 interface CRMContextType {
   leads: Lead[];
@@ -85,14 +86,7 @@ export const CRMProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     }
   });
 
-  const [team, setTeam] = useState<TeamMember[]>(() => {
-    try {
-      const stored = localStorage.getItem(LS.team);
-      return stored ? JSON.parse(stored) : SEED_TEAM;
-    } catch {
-      return SEED_TEAM;
-    }
-  });
+  const [team, setTeam] = useState<TeamMember[]>([]);
 
   const [binId, setBinIdState] = useState<string | null>(() => localStorage.getItem(LS.binId));
   const [binKey, setBinKeyState] = useState<string | null>(() => localStorage.getItem(LS.binKey));
@@ -174,13 +168,17 @@ export const CRMProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       }
       if (updates.team) {
         setTeam(updates.team);
-        localStorage.setItem(LS.team, JSON.stringify(updates.team));
+        // Sync new member to Supabase
+        const currentIds = new Set(team.map((m) => m.id));
+        const newMembers = updates.team.filter((m) => !currentIds.has(m.id));
+        newMembers.forEach((m) => {
+          createTeamMember(m);
+        });
         nextTeam = updates.team;
       }
     } else {
       localStorage.setItem(LS.tasks, JSON.stringify(tasks));
       localStorage.setItem(LS.activity, JSON.stringify(activity));
-      localStorage.setItem(LS.team, JSON.stringify(team));
     }
 
     // Schedule debounced cloud save
@@ -250,6 +248,27 @@ export const CRMProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     // 2. Realtime subscription
     const unsubscribe = subscribeToLeads((latestLeads) => {
       setLeads(latestLeads);
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, []);
+
+  // Load initial team, and subscribe to realtime changes on startup
+  useEffect(() => {
+    // 1. Initial fetch from Supabase
+    getTeam().then((res) => {
+      if (res.success && res.data) {
+        setTeam(res.data.length > 0 ? res.data : SEED_TEAM);
+      } else {
+        setTeam(SEED_TEAM);
+      }
+    });
+
+    // 2. Realtime subscription
+    const unsubscribe = subscribeToTeam((latestTeam) => {
+      setTeam(latestTeam.length > 0 ? latestTeam : SEED_TEAM);
     });
 
     return () => {
