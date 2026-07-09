@@ -4,7 +4,7 @@ import type { Lead } from '../types/Lead';
 import type { Task } from '../types/Task';
 import type { Activity } from '../types/Activity';
 import type { TeamMember } from '../types/TeamMember';
-import { SEED_TEAM, SEED_LEADS } from '../constants/seedData';
+import { SEED_TEAM } from '../constants/seedData';
 import * as jsonbin from '../services/jsonbin';
 import { getLeads, subscribeToLeads } from '../services/leadsService';
 
@@ -64,14 +64,7 @@ const LS = {
 };
 
 export const CRMProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [leads, setLeads] = useState<Lead[]>(() => {
-    try {
-      const stored = localStorage.getItem(LS.leads);
-      return stored ? JSON.parse(stored) : SEED_LEADS;
-    } catch {
-      return SEED_LEADS;
-    }
-  });
+  const [leads, setLeads] = useState<Lead[]>([]);
 
 
   const [tasks, setTasks] = useState<Task[]>(() => {
@@ -167,7 +160,6 @@ export const CRMProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     if (updates) {
       if (updates.leads) {
         setLeads(updates.leads);
-        localStorage.setItem(LS.leads, JSON.stringify(updates.leads));
         nextLeads = updates.leads;
       }
       if (updates.tasks) {
@@ -186,7 +178,6 @@ export const CRMProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         nextTeam = updates.team;
       }
     } else {
-      localStorage.setItem(LS.leads, JSON.stringify(leads));
       localStorage.setItem(LS.tasks, JSON.stringify(tasks));
       localStorage.setItem(LS.activity, JSON.stringify(activity));
       localStorage.setItem(LS.team, JSON.stringify(team));
@@ -253,14 +244,12 @@ export const CRMProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     getLeads().then((res) => {
       if (res.success && res.data) {
         setLeads(res.data);
-        localStorage.setItem(LS.leads, JSON.stringify(res.data));
       }
     });
 
     // 2. Realtime subscription
     const unsubscribe = subscribeToLeads((latestLeads) => {
       setLeads(latestLeads);
-      localStorage.setItem(LS.leads, JSON.stringify(latestLeads));
     });
 
     return () => {
