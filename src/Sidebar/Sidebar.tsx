@@ -30,14 +30,13 @@ export const Sidebar: React.FC = () => {
         <div className="logo-mark" style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '4px' }}>
           {!imageError ? (
             <img
-              src="https://tekxera.com/wp-content/uploads/2023/03/TekXera_Color.png"
+              src="/logo.png"
               alt="TekXera"
               onError={() => setImageError(true)}
               style={{
-                height: '38px',
+                height: '24px',
                 width: 'auto',
                 objectFit: 'contain',
-                filter: 'brightness(0) invert(1)',
               }}
             />
           ) : null}
