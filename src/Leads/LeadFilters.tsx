@@ -12,6 +12,8 @@ interface LeadFiltersProps {
   filterChannel: string;
   setFilterChannel: (channel: string) => void;
   uniqueAssignees: string[];
+  sortBy: string;
+  setSortBy: (sortBy: string) => void;
 }
 
 export const LeadFilters: React.FC<LeadFiltersProps> = ({
@@ -26,12 +28,14 @@ export const LeadFilters: React.FC<LeadFiltersProps> = ({
   filterChannel,
   setFilterChannel,
   uniqueAssignees,
+  sortBy,
+  setSortBy,
 }) => {
   return (
     <div className="filter-bar">
       <input
-        type="text"
         id="search-input"
+        type="text"
         placeholder="Search name, company, email…"
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
@@ -79,6 +83,20 @@ export const LeadFilters: React.FC<LeadFiltersProps> = ({
         <option value="email">Email</option>
         <option value="phone">Phone</option>
         <option value="event">In-person</option>
+      </select>
+      <select
+        id="sort-by"
+        value={sortBy}
+        onChange={(e) => setSortBy(e.target.value)}
+      >
+        <option value="newest">Newest First</option>
+        <option value="oldest">Oldest First</option>
+        <option value="company-az">Company Name (A–Z)</option>
+        <option value="company-za">Company Name (Z–A)</option>
+        <option value="status">Status</option>
+        <option value="priority">Priority</option>
+        <option value="followup-nearest">Follow-up Date (Nearest First)</option>
+        <option value="followup-latest">Follow-up Date (Latest First)</option>
       </select>
     </div>
   );

@@ -144,6 +144,7 @@ input[type=text]:focus,input[type=email]:focus,input[type=date]:focus,select:foc
 select option{background:var(--bg3)}
 .filter-bar input{width:200px}
 .filter-bar select{width:130px}
+#sort-by{width:210px}
 table{width:100%;border-collapse:collapse}
 th{text-align:left;padding:10px 14px;font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;background:var(--bg3);border-bottom:1px solid var(--border)}
 td{padding:11px 14px;border-bottom:1px solid var(--border);vertical-align:middle}
