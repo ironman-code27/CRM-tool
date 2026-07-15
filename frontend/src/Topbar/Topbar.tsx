@@ -8,6 +8,7 @@ const viewTitles: Record<string, [string, string]> = {
   pipeline: ['Pipeline', 'Drag leads through your sales stages'],
   leads: ['All leads', 'Search, filter and manage every contact'],
   activity: ['Activity log', 'Every touchpoint across all channels'],
+  history: ['Activity History', 'Audit logs of every action performed in the CRM'],
   tasks: ['Tasks', 'Follow-ups and to-dos for the team'],
   team: ['Team members', 'Manage who has access to the CRM'],
   detail: ['Lead detail', ''],
@@ -24,6 +25,7 @@ export const Topbar: React.FC = () => {
     setEditLeadId,
     setUploadResultsHtml,
     toast,
+    logManualHistory,
   } = useCRM();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -44,6 +46,7 @@ export const Topbar: React.FC = () => {
   const handleExport = () => {
     csvService.exportCSV(leads, activity);
     toast('CSV downloaded');
+    logManualHistory('CSV Exported', 'Import / Export', '', 'CRM Leads', 'Exported all leads to CSV.');
   };
 
   // Build Results UI HTML (matches the original UI markup exactly)
@@ -101,6 +104,7 @@ export const Topbar: React.FC = () => {
         triggerSave({ leads: result.updatedLeads });
         setUploadResultsHtml(buildUploadResultsHtml(result, true));
         setActiveModal('upload');
+        logManualHistory('CSV Imported', 'Import / Export', '', 'CRM Leads', `Imported ${result.added} leads successfully from Excel file.`);
 
         // Sync only genuinely new leads to Supabase (non-blocking)
         if (result.added > 0) {
@@ -126,6 +130,7 @@ export const Topbar: React.FC = () => {
           triggerSave({ leads: result.updatedLeads });
           setUploadResultsHtml(buildUploadResultsHtml(result, false));
           setActiveModal('upload');
+          logManualHistory('CSV Imported', 'Import / Export', '', 'CRM Leads', `Imported ${result.added} leads successfully from CSV file.`);
 
           // Sync only genuinely new leads to Supabase (non-blocking)
           if (result.added > 0) {

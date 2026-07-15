@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { createBin } from '../services/jsonbin';
+import { useCRM } from '../context/CRMContext';
 
 interface SyncModalProps {
   binId: string | null;
@@ -32,6 +33,7 @@ export const SyncModal: React.FC<SyncModalProps> = ({
 }) => {
   const [masterKey, setMasterKey] = useState(binKey || '');
   const [binIdInput, setBinIdInput] = useState(binId || '');
+  const { logManualHistory } = useCRM();
 
   const handleSave = async () => {
     const key = masterKey.trim();
@@ -44,6 +46,7 @@ export const SyncModal: React.FC<SyncModalProps> = ({
 
     setBinKey(key);
     localStorage.setItem('tx-bin-key', key);
+    logManualHistory('Settings Changed', 'System', '', 'Sync Settings', 'Sync configuration (JSONBin ID and Key) was updated.');
 
     if (bid) {
       setBinId(bid);

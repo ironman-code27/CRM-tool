@@ -281,17 +281,17 @@ export const DashboardStats: React.FC<DashboardStatsProps> = ({
       >
         <div className="db-card-header">
           <div>
-            <span className="db-card-title" style={{ fontSize: '13px' }}>Total Leads</span>
-            <div className="db-card-subtitle" style={{ fontSize: '12px' }}>All time leads count</div>
+            <span className="db-card-title">Total Leads</span>
+            <div className="db-card-subtitle">All time leads count</div>
           </div>
           <div 
             className="db-card-icon" 
             style={{ 
-              backgroundColor: 'rgba(39, 5, 124, 0.08)', 
-              color: '#27057C',
-              width: '42px',
-              height: '42px',
-              fontSize: '18px'
+              backgroundColor: 'rgba(91, 61, 245, 0.04)', 
+              color: '#5B3DF5',
+              width: '28px',
+              height: '28px',
+              fontSize: '13px'
             }}
           >
             👥
@@ -302,7 +302,7 @@ export const DashboardStats: React.FC<DashboardStatsProps> = ({
           <div className="db-card-val">
             <AnimatedNumber value={leadsCount} />
           </div>
-          <div className="db-card-subtitle" style={{ marginTop: '6px', fontWeight: 500 }}>
+          <div className="db-card-subtitle" style={{ marginTop: '6px', fontWeight: 400 }}>
             Active CRM Pipeline Database
           </div>
         </div>
@@ -326,7 +326,7 @@ export const DashboardStats: React.FC<DashboardStatsProps> = ({
           subtitle="New this month"
           colorStart="#2563EB"
           colorEnd="#4F46E5"
-          bgColor="rgba(37, 99, 235, 0.08)"
+          bgColor="rgba(37, 99, 235, 0.04)"
           icon="👤"
           delayIndex={1}
           profile="new-leads"
@@ -337,7 +337,7 @@ export const DashboardStats: React.FC<DashboardStatsProps> = ({
           subtitle="In progress leads"
           colorStart="#5B3DF5"
           colorEnd="#7C4DFF"
-          bgColor="rgba(91, 61, 245, 0.08)"
+          bgColor="rgba(91, 61, 245, 0.04)"
           icon="📞"
           delayIndex={2}
           profile="contacted"
@@ -348,7 +348,7 @@ export const DashboardStats: React.FC<DashboardStatsProps> = ({
           subtitle="Qualified leads"
           colorStart="#EA580C"
           colorEnd="#FB923C"
-          bgColor="rgba(234, 88, 12, 0.08)"
+          bgColor="rgba(234, 88, 12, 0.04)"
           icon="🏅"
           delayIndex={3}
           profile="qualified"
@@ -359,7 +359,7 @@ export const DashboardStats: React.FC<DashboardStatsProps> = ({
           subtitle="Successfully closed"
           colorStart="#16A34A"
           colorEnd="#34D399"
-          bgColor="rgba(22, 163, 74, 0.08)"
+          bgColor="rgba(22, 163, 74, 0.04)"
           icon="✅"
           delayIndex={4}
           profile="closed"
@@ -370,7 +370,7 @@ export const DashboardStats: React.FC<DashboardStatsProps> = ({
           subtitle="Pending activities"
           colorStart="#DB2777"
           colorEnd="#EC4899"
-          bgColor="rgba(219, 39, 119, 0.08)"
+          bgColor="rgba(219, 39, 119, 0.04)"
           icon="⚡"
           delayIndex={5}
           profile="activities"
@@ -381,7 +381,7 @@ export const DashboardStats: React.FC<DashboardStatsProps> = ({
           subtitle="Tasks to do"
           colorStart="#DC2626"
           colorEnd="#F87171"
-          bgColor="rgba(220, 38, 38, 0.08)"
+          bgColor="rgba(220, 38, 38, 0.04)"
           icon="📋"
           delayIndex={6}
           profile="open-tasks"

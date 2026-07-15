@@ -18,7 +18,7 @@ export async function cloudLoad(binId: string, binKey: string) {
 export async function cloudSave(
   binId: string,
   binKey: string,
-  data: { leads: any[]; tasks: any[]; activity: any[]; team: any[] }
+  data: { leads: any[]; tasks: any[]; activity: any[]; team: any[]; historyList?: any[] }
 ) {
   if (!binId || !binKey) return false;
   try {
@@ -39,7 +39,7 @@ export async function cloudSave(
 
 export async function createBin(
   binKey: string,
-  data: { leads: any[]; tasks: any[]; activity: any[]; team: any[] }
+  data: { leads: any[]; tasks: any[]; activity: any[]; team: any[]; historyList?: any[] }
 ) {
   try {
     const r = await fetch(`${JSONBIN_API}/b`, {

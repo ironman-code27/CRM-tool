@@ -12,6 +12,7 @@ import LeadDetail from './LeadDetail/LeadDetail';
 import ActivityPage from './Activity/Activity';
 import Tasks from './Tasks/Tasks';
 import Team from './Team/Team';
+import HistoryPage from './History/History';
 
 function AppContent() {
   const { currentView } = useCRM();
@@ -28,6 +29,8 @@ function AppContent() {
         return <LeadDetail />;
       case 'activity':
         return <ActivityPage />;
+      case 'history':
+        return <HistoryPage />;
       case 'tasks':
         return <Tasks />;
       case 'team':
