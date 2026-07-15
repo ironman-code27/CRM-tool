@@ -35,6 +35,8 @@ export const Dashboard: React.FC = () => {
     triggerSave({ tasks: nextTasks });
   };
 
+  const { setCurrentView } = useCRM();
+
   return (
     <div id="view-dashboard" className="view active">
       {/* Statistics Grid */}
@@ -49,31 +51,44 @@ export const Dashboard: React.FC = () => {
       />
 
       {/* Split Cards: Recent Activity & Open Tasks */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+      <div className="db-split-grid">
         <RecentActivity recentActivities={recentActivities} leads={leads} />
 
-        <div className="card">
-          <div className="card-header">
-            <span className="card-header-title">Open tasks</span>
+        <div className="db-section-card db-animate-fade-in" style={{ animationDelay: '150ms' }}>
+          <div className="db-section-header">
+            <div className="db-section-title-wrap">
+              <span className="db-section-icon">✅</span>
+              <span className="db-section-title">Open Tasks</span>
+            </div>
+            <button 
+              className="btn btn-ghost btn-sm"
+              onClick={() => setCurrentView('tasks')}
+              style={{ borderRadius: '8px', fontSize: '12px' }}
+            >
+              View all
+            </button>
           </div>
-          <div className="card-body" id="dash-tasks" style={{ padding: '12px 16px' }}>
+          <div className="db-section-body" id="dash-tasks" style={{ padding: '20px 24px' }}>
             {openTasks.length ? (
-              openTasks.map((t) => {
-                const lead = leads.find((x) => x.id === t.leadId);
-                return (
-                  <TaskItem
-                    key={t.id}
-                    task={t}
-                    lead={lead}
-                    onToggle={handleToggleTask}
-                    variant="dashboard"
-                  />
-                );
-              })
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                {openTasks.map((t) => {
+                  const lead = leads.find((x) => x.id === t.leadId);
+                  return (
+                    <TaskItem
+                      key={t.id}
+                      task={t}
+                      lead={lead}
+                      onToggle={handleToggleTask}
+                      variant="dashboard"
+                    />
+                  );
+                })}
+              </div>
             ) : (
-              <div className="empty-state">
-                <div className="empty-icon">✅</div>
-                No open tasks
+              <div className="db-empty-state">
+                <div className="db-empty-icon">🎉</div>
+                <div className="db-empty-text">No open tasks</div>
+                <div className="db-empty-subtext">You're all caught up! New tasks will show here.</div>
               </div>
             )}
           </div>
