@@ -116,10 +116,11 @@ export function processImportRows(rows: Record<string, any>[], currentLeads: Lea
     }
 
     const svcRaw = (r['services'] || r['service'] || '').toLowerCase();
-    const svcs: ('cyber' | 'cloud' | 'saas')[] = [];
+    const svcs: ('cyber' | 'cloud' | 'saas' | 'pmaas')[] = [];
     if (svcRaw.includes('cyber')) svcs.push('cyber');
     if (svcRaw.includes('cloud') || svcRaw.includes('it ')) svcs.push('cloud');
     if (svcRaw.includes('saas') || svcRaw.includes('software')) svcs.push('saas');
+    if (svcRaw.includes('pmaas') || svcRaw.includes('pm ')) svcs.push('pmaas');
 
     nextLeads.push({
       id: 'l' + Date.now() + 'x' + i,

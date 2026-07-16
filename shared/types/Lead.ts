@@ -11,7 +11,7 @@ export interface Lead {
   country: string;
   stage: PipelineStage;
   assignee: string;
-  services: ('cyber' | 'cloud' | 'saas')[];
+  services: ('cyber' | 'cloud' | 'saas' | 'pmaas')[];
   notes: string;
   channels: string[];
   created: string;

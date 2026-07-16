@@ -72,6 +72,7 @@ export const LeadFilters: React.FC<LeadFiltersProps> = ({
         <option value="cyber">Cybersecurity</option>
         <option value="cloud">IT / Cloud</option>
         <option value="saas">Software / SaaS</option>
+        <option value="pmaas">PMaaS</option>
       </select>
       <select
         id="filter-channel"

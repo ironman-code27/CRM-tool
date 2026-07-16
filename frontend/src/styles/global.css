@@ -166,6 +166,7 @@ body{font-family:'Anek Latin',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-s
 .tag-cyber{background:var(--red-bg);color:var(--red)}
 .tag-cloud{background:var(--blue-bg);color:var(--blue)}
 .tag-saas{background:var(--green-bg);color:var(--green)}
+.tag-pmaas{background:var(--purple-bg);color:var(--purple)}
 .stage-pill{font-size:10px;font-weight:700;padding:3px 9px;border-radius:10px;display:inline-block}
 .sp-new{background:var(--bg4);color:var(--text2)}
 .sp-contacted{background:var(--blue-bg);color:var(--blue)}

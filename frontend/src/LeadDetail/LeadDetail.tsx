@@ -13,12 +13,14 @@ const serviceLabels = {
   cyber: 'Cyber',
   cloud: 'Cloud',
   saas: 'SaaS',
+  pmaas: 'PMaaS',
 };
 
 const serviceClassNames = {
   cyber: 'tag tag-cyber',
   cloud: 'tag tag-cloud',
   saas: 'tag tag-saas',
+  pmaas: 'tag tag-pmaas',
 };
 
 const channelIcons = {

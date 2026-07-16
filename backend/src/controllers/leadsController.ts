@@ -58,7 +58,7 @@ function rowToLead(row: LeadRow): Lead {
     country: row.country ?? '',
     stage: (row.stage as PipelineStage) ?? 'new',
     assignee: row.assignee ?? '',
-    services: (row.services as ('cyber' | 'cloud' | 'saas')[]) ?? [],
+    services: (row.services as ('cyber' | 'cloud' | 'saas' | 'pmaas')[]) ?? [],
     notes: row.notes ?? '',
     channels: [],
     created: row.created_at ? row.created_at.slice(0, 10) : '',

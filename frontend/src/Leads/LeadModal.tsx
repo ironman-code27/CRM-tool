@@ -36,6 +36,7 @@ export const LeadModal: React.FC<LeadModalProps> = ({
   const [cyber, setCyber] = useState(false);
   const [cloud, setCloud] = useState(false);
   const [saas, setSaas] = useState(false);
+  const [pmaas, setPmaas] = useState(false);
   const [notes, setNotes] = useState('');
 
   useEffect(() => {
@@ -53,6 +54,7 @@ export const LeadModal: React.FC<LeadModalProps> = ({
         setCyber((l.services || []).includes('cyber'));
         setCloud((l.services || []).includes('cloud'));
         setSaas((l.services || []).includes('saas'));
+        setPmaas((l.services || []).includes('pmaas'));
         setNotes(l.notes || '');
       }
     }
@@ -64,10 +66,11 @@ export const LeadModal: React.FC<LeadModalProps> = ({
       return;
     }
 
-    const svcs: ('cyber' | 'cloud' | 'saas')[] = [];
+    const svcs: ('cyber' | 'cloud' | 'saas' | 'pmaas')[] = [];
     if (cyber) svcs.push('cyber');
     if (cloud) svcs.push('cloud');
     if (saas) svcs.push('saas');
+    if (pmaas) svcs.push('pmaas');
 
     // Supabase promise — assigned in each branch and fired after close()
     let supabaseOp: Promise<{ success: boolean; error?: string }>;
@@ -207,6 +210,9 @@ export const LeadModal: React.FC<LeadModalProps> = ({
               </label>
               <label>
                 <input type="checkbox" checked={saas} onChange={(e) => setSaas(e.target.checked)} /> Software / SaaS
+              </label>
+              <label>
+                <input type="checkbox" checked={pmaas} onChange={(e) => setPmaas(e.target.checked)} /> PMaaS
               </label>
             </div>
           </div>
